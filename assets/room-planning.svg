@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="640" viewBox="0 0 800 640" role="img" aria-labelledby="title desc">
+<title id="title">Golf room planning illustration</title><desc id="desc">A top-view illustration of a screen and hitting area with width and depth labels. Not to scale.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0 0 8 4 0 8" fill="none" stroke="#405939" stroke-width="1.2"/></marker><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#cbd7c2" stroke-width=".6"/></pattern></defs>
+<rect width="800" height="640" fill="#e9eee3"/><rect x="178" y="94" width="420" height="430" fill="url(#grid)" stroke="#405939" stroke-width="2"/>
+<rect x="205" y="125" width="366" height="11" rx="3" fill="#294535"/><text x="388" y="168" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" fill="#294535">IMPACT SCREEN</text>
+<path d="M223 358 Q388 217 553 358" fill="none" stroke="#7b966a" stroke-width="2" stroke-dasharray="7 6"/><text x="388" y="266" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#607154">CHECK SWING CLEARANCE</text>
+<rect x="313" y="313" width="150" height="102" fill="#d7ed91" stroke="#64834d"/><circle cx="388" cy="348" r="7" fill="#fff" stroke="#64834d"/><text x="388" y="392" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#294535">HITTING AREA</text>
+<path d="M178 57H598" fill="none" stroke="#405939" marker-start="url(#arrow)" marker-end="url(#arrow)"/><text x="388" y="40" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" letter-spacing="2" fill="#294535">USABLE WIDTH</text>
+<path d="M650 94V524" fill="none" stroke="#405939" marker-start="url(#arrow)" marker-end="url(#arrow)"/><text x="696" y="310" text-anchor="middle" transform="rotate(90 696 310)" font-family="Arial,sans-serif" font-size="14" letter-spacing="2" fill="#294535">USABLE DEPTH</text>
+<text x="388" y="476" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#607154">ALLOW SPACE BEHIND THE PLAYER</text>
+<text x="400" y="572" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#607154">Measure height to the lowest ceiling obstruction.</text><text x="400" y="604" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="#607154">ILLUSTRATIVE ONLY / NOT TO SCALE</text>
+</svg>

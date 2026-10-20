@@ -1,0 +1,140 @@
+[
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\触控台MNQKZT002\\MNQKZT002详情 (2).jpg",
+    "asset": "assets/console-mnqkzt002-features.webp",
+    "sourceSHA256": "e2cbbdece75443960fba4fbc17d7f02d27806447d0785accc729eb885acf7d3c",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\回球机MNQHQJ002\\MNQHQJ002 (2).jpg",
+    "asset": "assets/ball-return-mnqhqj002-control.webp",
+    "sourceSHA256": "cbcf1e8c3c572a687086afb3819fce89657bb92a8fbd363e3b0390f9b938a0a9",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC001\\MKPC001详情 (1).jpg",
+    "asset": "assets/enclosure-mkpc001.webp",
+    "sourceSHA256": "8d51e0bb7141a561495558055e1913b5ffb04d8e591a5c03a1906731c67dc359",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC001\\11.jpg",
+    "asset": "assets/brochures/enclosure-mkpc001.jpg",
+    "sourceSHA256": "a347d977f5cae5eefcd104fcb6a59752683d12ed84bc8ec05d42367c927f9dd4",
+    "webOptimised": false
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC001\\12.jpg",
+    "asset": "assets/brochures/enclosure-mkpc001-installation.jpg",
+    "sourceSHA256": "a320048e45e69641c979bcfa4afed09d0ee7e237c4f14e79883ae33be6d7df0b",
+    "webOptimised": false
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC002\\20260915_113449.jpg",
+    "asset": "assets/enclosure-mkpc002.webp",
+    "sourceSHA256": "edf745c8c2e1bfb684fa41975ff7112a622b7952566a9298bd5e432a4ec2b8fa",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC002\\13.jpg",
+    "asset": "assets/brochures/enclosure-mkpc002.jpg",
+    "sourceSHA256": "beec9370069acbf96b5c05769e25575dba65f8da05e15060a589e1c2861e4f31",
+    "webOptimised": false
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC002\\14.jpg",
+    "asset": "assets/brochures/enclosure-mkpc002-options.jpg",
+    "sourceSHA256": "05c4ba3bfb878a0081ea6c0e1b66ea7fa60eea985e3cbd028ea0b35d83d18cee",
+    "webOptimised": false
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\软包MNQ014根据设计图定制\\软包MNQ014.jpg",
+    "asset": "assets/brochures/padding-mnq014.jpg",
+    "sourceSHA256": "ff3d63e88bfdfce964eed823beed174044ec6c4a54f2177fa23591a555da17c3",
+    "webOptimised": false
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\MTKC001\\MTKC001详情 (3).jpg",
+    "asset": "assets/capsule-mtkc001.webp",
+    "sourceSHA256": "17414bb878445a5d5f5636d40f437dfe8feaf414cd2de038052564f96be599f2",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\MTKC002\\MTKC002 (1).jpg",
+    "asset": "assets/capsule-mtkc002.webp",
+    "sourceSHA256": "bae0cce5fcd4740542de37f06ee77043f80b2517f3c139a3792d28baa6773dec",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\MTKC002\\MTKC002 (11).jpg",
+    "asset": "assets/capsule-mtkc002-placement.webp",
+    "sourceSHA256": "d6b02585c8fcad3d53713f778501dc3184aafb676d90e7891c15e96fe93cf0e9",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\打击幕布MNQ010\\MNQ010详情 (8).jpg",
+    "asset": "assets/screen-mnq010-layers.webp",
+    "sourceSHA256": "bbeeda1ea501d8a09050c206f31ff2781cc3b08ec4f3b418523e293674e535a5",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\触控台MNQKZT002\\MNQKZT002详情 (6).jpg",
+    "asset": "assets/console-mnqkzt002-side.webp",
+    "sourceSHA256": "17849866b7946047393e227b197bf38aaa989530657a7ea438d23b5eef187c99",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\回球机MNQHQJ002\\MNQHQJ002 (7).jpg",
+    "asset": "assets/return-mnqhqj002-side.webp",
+    "sourceSHA256": "fe3da3295c3cfb8c412454e059c7235e9b050117494b6da7dce0f465ae12e7ac",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\动感平台DGPT001\\DGPT001详情 (8).jpg",
+    "asset": "assets/platform-dgpt001-with-mat.webp",
+    "sourceSHA256": "e559b21b4bf7e64c92d3450e24879afb465202653dc0193a15ae17dad3b3208b",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC001\\MKPC001详情 (13).jpg",
+    "asset": "assets/enclosure-mkpc001-assembly.webp",
+    "sourceSHA256": "0f9bd8e9b2bbef49b78d8c040c925447fc9950a2530657982ee4d14eb3384212",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\MTKC002\\MTKC002 (2).jpg",
+    "asset": "assets/capsule-mtkc002-side.webp",
+    "sourceSHA256": "2514bfa0c9408d54b4075367b7d574f25be6fd81903ec512de2555561d5a89e9",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\MTKC001\\MTKC001详情 (8).jpg",
+    "asset": "assets/capsule-mtkc001-glazing.webp",
+    "sourceSHA256": "4b8b353436ff266c36bfd3bcbd30f47f930087d64e10960d5b288dc1ac62a479",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\软包MNQ014根据设计图定制\\软包MNQ014.jpg",
+    "asset": "assets/padding-mnq014-overview.webp",
+    "sourceSHA256": "ff3d63e88bfdfce964eed823beed174044ec6c4a54f2177fa23591a555da17c3",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\打击垫\\22.jpg",
+    "asset": "assets/mats-djd039-djd036-overview.webp",
+    "sourceSHA256": "9e2e2a14809ca9150d9d8fd6201bfdc72b45da674f5b66cdd8f91ee0cc8a1bff",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\沙坑长草打击垫DJD055\\23.jpg",
+    "asset": "assets/mats-djd055-overview.webp",
+    "sourceSHA256": "f7a86dae39c255dfa69a67dc1d2d3eab5d02ffca807ac16eb6925da5f0e8666a",
+    "webOptimised": true
+  },
+  {
+    "source": "G:\\网站\\模拟器网站专题\\独立站\\产品配件素材\\快拼舱MKPC002\\14.jpg",
+    "asset": "assets/enclosure-mkpc002-options.webp",
+    "sourceSHA256": "05c4ba3bfb878a0081ea6c0e1b66ea7fa60eea985e3cbd028ea0b35d83d18cee",
+    "webOptimised": true
+  }
+]

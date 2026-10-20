@@ -1,0 +1,67 @@
+/* Shared finishing rules load after page styles on every route. */
+.catalog-card,.catalog-card.console-catalog-card,.catalog-card.compact-console-card,
+.variant-card,.reference-card,.resource-card,.p8-feature-grid article,
+.collection-preview-grid>a{background:#fafbf8;color:var(--ink);transition:background-color .25s ease,border-color .25s ease}
+.catalog-card .catalog-photo,.catalog-card.console-catalog-card .catalog-photo,
+.catalog-card.compact-console-card .catalog-photo{background:#e9eee5}
+.catalog-card h3,.variant-card h3,.reference-card h3,.resource-card h3,
+.p8-feature-grid h3,.collection-preview-grid h3,.play-card-copy h3{color:var(--ink)}
+.catalog-card p:not(.eyebrow),.variant-card>p,.reference-card p:not(.eyebrow),
+.resource-card p:not(.eyebrow),.p8-feature-grid p,.collection-preview-grid p{color:var(--grey)}
+.catalog-card:focus-within,.variant-card:focus-within,.reference-card:focus-within,
+.resource-card:focus-within,.collection-preview-grid>a:focus-visible,
+.equipment-map a:focus-visible{background:#dce6d4}
+.collection-preview-grid>a,.equipment-map a{transition:background-color .25s ease}
+.catalog-card-link span,.equipment-map b{transition:transform .2s ease}
+.catalog-card:focus-within .catalog-card-link span{transform:translate(3px,-3px)}
+.collection-preview-grid img,.collection-preview-grid>a:last-child img{background:#e8eee3;object-fit:contain}
+.system-feature img,.p8-detail-hero figure img,.solution-visual img,
+.inspiration-feature img,.about-story img{object-fit:contain;object-position:center}
+.inspiration-feature img,.solution-row#coaching img{height:auto;aspect-ratio:auto;object-fit:contain}
+.specifications,.p8-specs,.guide-checklist,.company-section,.contact-business{align-items:center}
+.specifications>div:first-child,.p8-specs>div:first-child,.guide-checklist>div:first-child{min-width:0}
+.variant-grid{align-items:stretch}.variant-card .button{margin-top:auto}
+.variant-card .spec-table{margin-bottom:26px}
+.related-grid .console-catalog-card{grid-column:auto;display:flex;flex-direction:column}
+.related-grid .console-catalog-card .catalog-photo{height:205px;margin:0;padding:24px}
+.related-grid .console-catalog-card .catalog-card-content{align-self:stretch;padding:28px;flex:1}
+.route-cards>div{display:flex;flex-direction:column;align-items:flex-start}
+.route-cards .quiet-link{margin-top:auto;padding-top:25px}
+.faq-intro-copy{color:var(--grey)}
+thead th{color:#51624b}
+.gallery-hint,.gallery-figure figcaption,.gallery-thumb span{color:#51624b}
+@media(hover:hover){
+  .catalog-card:hover,.variant-card:hover,.reference-card:hover,.resource-card:hover,
+  .p8-feature-grid article:hover,.collection-preview-grid>a:hover,
+  .equipment-map a:hover{background:#dce6d4;opacity:1}
+  .catalog-card:hover .catalog-card-link span,.equipment-map a:hover b{transform:translate(3px,-3px)}
+}
+@media(max-width:800px){
+  .related-grid .console-catalog-card .catalog-photo{height:185px}
+  .specifications,.p8-specs,.guide-checklist,.company-section,.contact-business{align-items:start}
+  .route-cards .quiet-link{margin-top:15px;padding-top:0}
+}
+@media(max-width:580px){.related-grid .console-catalog-card .catalog-photo{height:235px}}
+@media(prefers-reduced-motion:reduce){
+  .catalog-card,.variant-card,.reference-card,.resource-card,.p8-feature-grid article,
+  .collection-preview-grid>a,.equipment-map a,.catalog-card-link span,.equipment-map b{transition:none}
+  .catalog-card:hover .catalog-card-link span,.catalog-card:focus-within .catalog-card-link span,
+  .equipment-map a:hover b{transform:none}
+}
+
+/* Lower crop keeps the gym equipment and simulator while reducing ceiling space. */
+.fitness-section .fitness-scene{margin:0;min-width:0;background:#e3eadd;padding:16px}.fitness-section .fitness-scene img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center bottom}.fitness-section .fitness-scene figcaption{font-size:9px;letter-spacing:1px;color:#51624b;line-height:1.6;text-align:center;margin-top:14px}
+@media(max-width:800px){.fitness-section .fitness-scene{padding:12px}.fitness-section .fitness-scene img{aspect-ratio:4/3;object-fit:contain}}
+
+.showroom-reference figure{margin:0;min-width:0}.showroom-reference figure img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain}
+
+/* Solutions: identical image frames and captions for all three applications. */
+.solution-row .solution-scene-frame,.solution-row#coaching .solution-scene-frame{margin:0;padding:16px;background:#e3eadd;min-width:0}
+.solution-row .solution-scene-frame img,.solution-row#coaching .solution-scene-frame img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center}
+.solution-row#commercial .solution-scene-frame img{object-position:center bottom}
+.solution-row .solution-scene-frame figcaption{font-size:9px;letter-spacing:1px;line-height:1.6;text-align:center;color:#51624b;margin:14px 0 0}
+@media(max-width:800px){.solution-row .solution-scene-frame,.solution-row#coaching .solution-scene-frame{padding:12px}}
+
+/* Alternate Projects scenes; mobile keeps the same image-first reading order. */
+.project-scene-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media(max-width:800px){.project-scene-row{grid-template-columns:1fr}.project-scene-row>figure{order:0}.project-scene-row>div{order:1}}

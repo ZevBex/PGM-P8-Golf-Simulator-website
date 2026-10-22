@@ -76,6 +76,21 @@
     for (const id of ['name','location','message']) { const field = $(`#${id}`); field.value = field.value.trim(); field.setCustomValidity(field.value ? '' : 'Please complete this field.'); if (!field.value) valid = false; }
     if (!valid || !form.reportValidity()) { event.preventDefault(); form.reportValidity(); return; }
     if ($('#website').value) { event.preventDefault(); status.textContent = 'Unable to send this enquiry. Please contact the team directly.'; return; }
+    
+const returnUrl = new URL(window.location.href);
+returnUrl.hash = '';
+
+let nextField = form.querySelector('input[name="_next"]');
+
+if (!nextField) {
+  nextField = document.createElement('input');
+  nextField.type = 'hidden';
+  nextField.name = '_next';
+  form.appendChild(nextField);
+}
+
+nextField.value = returnUrl.href;
+
     send.disabled = true;
     send.textContent = 'Opening secure submission…';
     status.textContent = 'Please complete any security check on the next page. Your enquiry is not confirmed until the submission service responds.';

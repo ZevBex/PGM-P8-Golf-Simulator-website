@@ -1155,6 +1155,8 @@ main > section + section{border-top:1px solid var(--line)}
 #componentDetailModal .accessory-modal-actions{margin-top:22px;padding-top:20px;border-top:1px solid var(--line);gap:10px}
 @media(max-width:760px){#componentDetailModal .component-product-panel{width:100%;padding:20px;max-height:calc(100dvh - 24px)}#componentMediaGallery .accessory-media-main{height:32vh;min-height:180px}#componentMediaThumbs{max-height:170px;overflow-y:auto}}
 </style><link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+
 </head>
 <body>
 <header class="topbar"><div class="wrap nav"><a aria-label="pgmgolf home" class="brand" href="#home"><img alt="PGM Simulator — pgmgolf" class="brand-logo" src="assets/pgm-simulator-logo.png"></a><nav aria-label="Main navigation" class="nav-links" id="navLinks"><a class="active" href="#home">HOME</a><a href="#featured-technology">TECHNOLOGY</a><a href="#modes">PLAY MODES</a><a href="#system-overview">INTEGRATION</a><a href="#solutions">SOLUTIONS</a><a href="#site-requirements">SITE REQUIREMENTS</a><a href="#planning">FAQ</a><a href="#contact">CONTACT</a></nav>
@@ -1346,10 +1348,10 @@ async function sendContactForm(targetForm, statusEl, isModal=false){
  submit.disabled=true;submit.textContent='SENDING…';statusEl.textContent='';statusEl.classList.remove('error');
  const controller=new AbortController();const requestTimeout=setTimeout(()=>controller.abort(),20000);
  try{const payload=Object.fromEntries(data.entries());payload._subject='PGM P8 website inquiry — '+(payload.source_page||'Contact');payload._template='table';payload._captcha='false';
- const response=await fetch(CONTACT_FORM_ENDPOINT,{method:'POST',body:JSON.stringify(payload),headers:{Accept:'application/json','Content-Type':'application/json'},signal:controller.signal});const result=await response.json();if(!response.ok||!(result.success===true||result.success==='true'))throw new Error('The form service did not accept this submission.');
+ const response=await fetch(CONTACT_FORM_ENDPOINT,{method:'POST',body:JSON.stringify(payload),headers:{Accept:'application/json','Content-Type':'application/json'},signal:controller.signal});let result;try{result=await response.json()}catch{throw new Error('Mail service returned an unexpected response (HTTP '+response.status+').')}if(!response.ok||!(result.success===true||result.success==='true'))throw new Error(String(result.message||result.error||('Mail service rejected the request (HTTP '+response.status+').')).slice(0,400));
    if(isModal){const name=data.get('fullName')||'there';$('#successMessage').textContent=`Thanks, ${name}. Your inquiry was sent successfully.`;$('#bookingContent').style.display='none';$('#bookingSuccess').classList.add('show');}
    else{targetForm.reset();statusEl.textContent='Thanks — your inquiry was sent. We’ll be in touch.';}
- }catch(err){statusEl.textContent='We couldn’t confirm delivery. Please try again or email tracy@pgmgolf.com.';statusEl.classList.add('error');}
+ }catch(err){const reason=err.name==='AbortError'?'The mail service timed out.':err instanceof TypeError?'Cannot connect to the mail service. Check your connection, browser extensions, and HTTPS.':err.message;statusEl.textContent='Unable to send: '+reason+' Please email tracy@pgmgolf.com if this continues.';statusEl.classList.add('error');}
  finally{clearTimeout(requestTimeout);submit.disabled=false;submit.textContent=original;}
 }
 form.addEventListener('submit',e=>{e.preventDefault();sendContactForm(form,$('#modalContactStatus'),true)});
@@ -1636,4 +1638,108 @@ $$('[data-contact-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDe
 .unified-system-layout .addon-card .addon-icon img{display:block;width:100%;height:100%;max-height:100%;min-height:0;object-fit:contain}
 .unified-system-layout .addon-card .addon-kicker{display:block;position:static;margin:0 0 7px;line-height:1.5}
 @media(min-width:561px){.unified-system-layout .addon-card{display:flex;flex-direction:column;gap:12px}.unified-system-layout .addon-card .addon-icon{height:210px;flex:0 0 210px;margin:0}.unified-system-layout .addon-card>div:nth-child(2){width:100%;padding:0}}
-</style><style id="online-mode-static-image">#modeOnlineImage{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#050b0d}#modeOnlineImage[hidden],#modeVideo[hidden]{display:none!important}</style><style id="online-image-no-decoration">#modeArt.online-art::before,#modeArt.online-art::after,#modeArt.online-art .target-ring{display:none!important}</style></body></html>
+</style><style id="online-mode-static-image">#modeOnlineImage{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#050b0d}#modeOnlineImage[hidden],#modeVideo[hidden]{display:none!important}</style><style id="online-image-no-decoration">#modeArt.online-art::before,#modeArt.online-art::after,#modeArt.online-art .target-ring{display:none!important}</style><script id="catalog-request-inline">
+(() => {
+  'use strict';
+  if (document.getElementById('catalogDialog')) return;
+  const SITE_KEY = '0x4AAAAAAFxdTlGHk155eZ73';
+  const ENDPOINT = 'https://pgm-catalog-mailer.solitudian.workers.dev/';
+  const css = document.createElement('style');
+  css.textContent = `.catalog-dialog{width:min(540px,calc(100% - 32px));max-height:90dvh;overflow:auto;padding:30px;border:1px solid #355047;border-radius:18px;background:#0b1518;color:#f4f7f6;font:inherit}.catalog-dialog::backdrop{background:#000b}.catalog-dialog h2{font-size:clamp(1.7rem,4vw,2.2rem);line-height:1.15;margin:12px 30px 14px 0}.catalog-dialog p{color:#aebdc0}.catalog-close{position:absolute;right:14px;top:10px;background:transparent;border:0;color:white;font-size:1.7rem;padding:4px 10px}.catalog-dialog label{display:block;margin:20px 0 8px;font-weight:700}.catalog-dialog input[type=email]{width:100%;border:1px solid #355047;border-radius:9px;padding:13px;background:#071012;color:white}.catalog-dialog .catalog-status{white-space:pre-line;font-size:.88rem;min-height:24px}.catalog-dialog .catalog-status.error{color:#ffb4a9}.catalog-dialog .catalog-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.catalog-verify{margin:18px 0;min-height:65px}.catalog-dialog button:disabled{opacity:.55;cursor:wait}.catalog-dialog .btn{min-height:46px}.catalog-entry{margin-top:24px}@media(max-width:480px){.catalog-dialog{padding:22px 16px}}`;
+  document.head.append(css);
+  const dialog = document.createElement('dialog');
+  dialog.id = 'catalogDialog'; dialog.className = 'catalog-dialog'; dialog.setAttribute('aria-labelledby', 'catalogHeading');
+  dialog.innerHTML = `<button class="catalog-close" type="button" aria-label="Close catalog request">×</button><div class="eyebrow">PGM GOLF SIMULATOR CATALOG</div><h2 id="catalogHeading">Your next setup starts here.</h2><p>Enter your email and we’ll send you a link to our product catalog.</p><form id="catalogRequestForm"><label for="catalogEmail">Email address *</label><input id="catalogEmail" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required><div class="catalog-trap" aria-hidden="true"><label for="catalogWebsite">Leave this field empty</label><input id="catalogWebsite" name="website" tabindex="-1" autocomplete="off"></div><div id="catalogVerification" class="catalog-verify"></div><button class="btn btn-primary" type="submit" disabled>EMAIL ME THE CATALOG →</button><p class="catalog-status" role="status" aria-live="polite"></p><p style="font-size:.78rem">We’ll use your email to deliver the requested catalog and notify our team. This does not subscribe you to marketing emails.</p></form>`;
+  document.body.append(dialog);
+  const form = dialog.querySelector('form'), submit = form.querySelector('[type=submit]'), status = form.querySelector('[role=status]');
+  let widget = null, token = '', loading = null, busy = false, returnFocus;
+  function message(text, error = false) { status.textContent = text; status.classList.toggle('error', error); }
+  function loadTurnstile() {
+    if (window.turnstile) return Promise.resolve();
+    if (loading) return loading;
+    loading = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; script.async = true;
+      const timer = setTimeout(() => { loading = null; script.remove(); reject(new Error('Verification could not load. Please check your connection and try again.')); }, 15000);
+      script.onload = () => { clearTimeout(timer); resolve(); };
+      script.onerror = () => { clearTimeout(timer); loading = null; script.remove(); reject(new Error('Verification could not load. Please check your connection and try again.')); };
+      document.head.append(script);
+    });
+    return loading;
+  }
+  async function openCatalog() {
+    returnFocus = document.activeElement; if (!dialog.open) dialog.showModal();
+    form.querySelector('[type=email]').focus();
+    try {
+      await loadTurnstile(); if (!dialog.open) return;
+      if (widget !== null) return;
+      widget = window.turnstile.render('#catalogVerification', {sitekey:SITE_KEY, action:'catalog', theme:'dark', size:'flexible', callback(value) { token = value; submit.disabled = busy; }, 'expired-callback'() { token = ''; submit.disabled = true; }, 'error-callback'() { token = ''; submit.disabled = true; message('Verification failed. Please close this window and try again.', true); }});
+    } catch (error) { message(error.message, true); }
+  }
+  dialog.querySelector('.catalog-close').onclick = () => dialog.close();
+  dialog.addEventListener('click', e => { if (e.target === dialog) { const r = dialog.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close(); } });
+  dialog.addEventListener('close', () => { if (widget !== null && window.turnstile) window.turnstile.remove(widget); widget = null; token = ''; submit.disabled = true; if (returnFocus?.isConnected) returnFocus.focus(); });
+  form.addEventListener('submit', async e => {
+    e.preventDefault(); if (busy || !form.reportValidity()) return;
+    if (!token) return message('Please complete the verification.', true);
+    busy = true; submit.disabled = true; submit.textContent = 'SENDING…'; message('');
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 30000);
+    try {
+      const response = await fetch(ENDPOINT, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:form.elements.email.value.trim(),website:form.elements.website.value,token}),signal:controller.signal});
+      let result; try { result = await response.json(); } catch { throw new Error('Unexpected service response. Please try again later.'); }
+      if (!response.ok || result.success !== true) throw new Error(result.message || 'Unable to send the catalog. Please try again.');
+      message('Your catalog email has been submitted. Please check your inbox and spam folder.');
+    } catch (error) { message(error.name === 'AbortError' ? 'The request timed out. Please check your inbox before trying again.' : error instanceof TypeError ? 'Could not connect. Please try again or email tracy@pgmgolf.com.' : error.message, true); }
+    finally { clearTimeout(timer); busy = false; token = ''; submit.textContent = 'EMAIL ME THE CATALOG →'; submit.disabled = true; if (widget !== null && window.turnstile) window.turnstile.reset(widget); }
+  });
+  function entry(parent, label) { if (!parent) return; const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline'; button.textContent = label; button.onclick = openCatalog; parent.append(button); }
+  entry(document.querySelector('.hero-actions'), 'GET THE CATALOG ↓');
+  const contact = document.querySelector('.contact-copy');
+  if (contact) { const row = document.createElement('div'); row.className = 'catalog-entry'; entry(row, 'EMAIL ME THE CATALOG ↓'); contact.append(row); }
+})();
+
+</script>
+<script id="solution-videos-inline">
+(() => {
+  'use strict';
+  const sources = {
+    residential: 'https://gv.videocdn.alibaba.com/icbu_vod_video/video_target/gv9e-ee6c1744-a187c84c-9e15e503-4c4e/trans/aidc/cs2eqh-h264-hd.mp4',
+    commercial: 'https://gv.videocdn.alibaba.com/icbu_vod_video/video_target/gv9e-ee6bb1d7-8bd2a4ce-9e15c0c2-0193/trans/aidc/qyqali-h264-hd.mp4'
+  };
+  if (document.getElementById('solutionVideoDialog')) return;
+  const dialog = document.createElement('dialog');
+  dialog.id = 'solutionVideoDialog'; dialog.className = 'solution-video-dialog'; dialog.setAttribute('aria-labelledby','solutionVideoTitle');
+  dialog.innerHTML = '<button class="solution-video-close" aria-label="Close scene video" type="button">×</button><div class="eyebrow">MADE FOR THE WAY YOU PLAY</div><h2 id="solutionVideoTitle"></h2><video controls playsinline preload="none" aria-label="Golf simulator scene video"></video><p class="solution-video-description"></p><p class="solution-video-status" role="status"></p><button class="btn btn-primary solution-video-inquiry" type="button">ASK ABOUT THIS SETUP →</button>';
+  document.body.append(dialog);
+  const style = document.createElement('style');
+  style.textContent = '.solution-video-dialog{width:min(1000px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;padding:26px;border:1px solid #355047;border-radius:18px;background:#0b1518;color:#f4f7f6}.solution-video-dialog::backdrop{background:#000b}.solution-video-dialog h2{margin:10px 40px 20px 0;font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.2}.solution-video-dialog video{display:block;width:100%;max-height:60vh;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:12px}.solution-video-description{color:#aebdc0;line-height:1.7;margin:20px 0}.solution-video-status{font-size:.85rem;color:#ffb4a9}.solution-video-close{position:absolute;right:16px;top:12px;border:0;background:none;color:#fff;font-size:1.8rem}.solution-play-hint{display:inline-flex;gap:8px;align-items:center;margin-top:18px;padding:8px 12px;border:1px solid #5cf06b;border-radius:999px;color:#5cf06b;font-size:.7rem;font-weight:800;letter-spacing:.06em}.solution-video-dialog .btn{min-height:46px}@media(max-width:560px){.solution-video-dialog{padding:20px 16px}}';
+  document.head.append(style);
+  const video = dialog.querySelector('video'), status = dialog.querySelector('[role=status]');
+  let activeCard = null, forwarding = false;
+  function open(card, kind) {
+    activeCard = card;
+    dialog.querySelector('h2').textContent = card.querySelector('h3').textContent;
+    dialog.querySelector('.solution-video-description').textContent = card.querySelector('p').textContent;
+    status.textContent = '';
+    video.poster = kind === 'residential' ? 'assets/Residential golf studios.webp' : 'assets/Commercial golf experiences.webp';
+    video.src = sources[kind]; video.load();
+    if (!dialog.open) dialog.showModal();
+    video.play().catch(() => { status.textContent = 'Press play to watch the video.'; });
+  }
+  video.addEventListener('error', () => { status.textContent = 'The video could not load. Please try again or ask us about this setup.'; });
+  dialog.querySelector('.solution-video-close').onclick = () => dialog.close();
+  dialog.addEventListener('close', () => { video.pause(); video.removeAttribute('src'); video.load(); if (activeCard?.isConnected) activeCard.focus({preventScroll:true}); });
+  dialog.addEventListener('click', e => { if (e.target !== dialog) return; const r=dialog.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) dialog.close(); });
+  dialog.querySelector('.solution-video-inquiry').onclick = () => { const card=activeCard; dialog.close(); if(card){forwarding=true;try{card.click()}finally{forwarding=false}} };
+  for (const kind of Object.keys(sources)) {
+    const card = document.querySelector('.solution-card.' + kind); if (!card) continue;
+    card.setAttribute('aria-label','Watch video: '+card.querySelector('h3').textContent);
+    card.setAttribute('aria-haspopup','dialog');
+    const hint=document.createElement('span');hint.className='solution-play-hint';hint.textContent='▶ WATCH SCENE VIDEO';card.querySelector('.solution-content').append(hint);
+    card.addEventListener('click', e => {if(forwarding)return;e.preventDefault();e.stopImmediatePropagation();open(card,kind)},true);
+    card.addEventListener('keydown', e => {if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopImmediatePropagation();open(card,kind)}},true);
+  }
+})();
+
+</script>
+</body></html>

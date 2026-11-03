@@ -1645,7 +1645,7 @@ $$('[data-contact-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDe
   const SITE_KEY = '0x4AAAAAAFxdTlGHk155eZ73';
   const ENDPOINT = 'https://catalog-api.mypgmgolf.com/';
   const css = document.createElement('style');
-  css.textContent = `.catalog-dialog{width:min(540px,calc(100% - 32px));max-height:90dvh;overflow:auto;padding:30px;border:1px solid #355047;border-radius:18px;background:#0b1518;color:#f4f7f6;font:inherit}.catalog-dialog::backdrop{background:#000b}.catalog-dialog h2{font-size:clamp(1.35rem,3.2vw,1.7rem);line-height:1.2;margin:12px 0 14px}.catalog-dialog p{color:#aebdc0}.catalog-close{position:absolute;right:14px;top:10px;background:transparent;border:0;color:white;font-size:1.7rem;padding:4px 10px}.catalog-dialog label{display:block;margin:20px 0 8px;font-weight:700}.catalog-dialog input[type=email]{width:100%;border:1px solid #355047;border-radius:9px;padding:13px;background:#071012;color:white}.catalog-dialog .catalog-status{white-space:pre-line;font-size:.88rem;min-height:24px}.catalog-dialog .catalog-status.error{color:#ffb4a9}.catalog-dialog .catalog-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.catalog-verify{margin:18px 0;min-height:65px}.catalog-dialog button:disabled{opacity:.55;cursor:wait}.catalog-dialog .btn{min-height:46px}.catalog-entry{margin-top:24px}@media(max-width:480px){.catalog-dialog{padding:22px 16px}}`;
+  css.textContent = `.catalog-dialog{width:min(540px,calc(100% - 32px));max-height:90dvh;overflow:auto;padding:30px;border:1px solid #355047;border-radius:18px;background:#0b1518;color:#f4f7f6;font:inherit}.catalog-dialog::backdrop{background:#000b}.catalog-dialog h2{font-size:clamp(1.35rem,3.2vw,1.7rem);line-height:1.2;margin:12px 0 14px}.catalog-dialog p{color:#aebdc0}.catalog-close{position:absolute;right:14px;top:10px;background:transparent;border:0;color:white;font-size:1.7rem;padding:4px 10px}.catalog-dialog label{display:block;margin:20px 0 8px;font-weight:700}.catalog-dialog input[type=email]{width:100%;border:1px solid #355047;border-radius:9px;padding:13px;background:#071012;color:white}.catalog-dialog .catalog-status{white-space:pre-line;font-size:.88rem;min-height:24px}.catalog-dialog .catalog-status.error{color:#ffd0c8;background:rgba(235,95,75,.09);border:1px solid rgba(235,115,95,.4)}.catalog-dialog .catalog-status.success{color:#d8f7df;background:rgba(92,240,107,.08);border:1px solid rgba(92,240,107,.38)}.catalog-dialog .catalog-status.error,.catalog-dialog .catalog-status.success{padding:14px 16px;border-radius:10px;line-height:1.6;margin:18px 0}.catalog-status strong{display:block;font-size:.95rem;margin-bottom:5px}.catalog-status.success strong{color:#5cf06b}.catalog-status.error strong{color:#ffb4a9}.catalog-status span{display:block}.catalog-dialog .catalog-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.catalog-verify{margin:18px 0;min-height:65px}.catalog-dialog button:disabled{opacity:.55;cursor:wait}.catalog-dialog .btn{min-height:46px}.catalog-entry{margin-top:24px}@media(max-width:480px){.catalog-dialog{padding:22px 16px}}`;
   document.head.append(css);
   const dialog = document.createElement('dialog');
   dialog.id = 'catalogDialog'; dialog.className = 'catalog-dialog'; dialog.setAttribute('aria-labelledby', 'catalogHeading');
@@ -1653,7 +1653,11 @@ $$('[data-contact-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDe
   document.body.append(dialog);
   const form = dialog.querySelector('form'), submit = form.querySelector('[type=submit]'), status = form.querySelector('[role=status]');
   let widget = null, token = '', loading = null, busy = false, returnFocus;
-  function message(text, error = false) { status.textContent = text; status.classList.toggle('error', error); }
+  function message(text, error = false, success = false) {
+    status.replaceChildren(); status.classList.toggle('error', error && !!text); status.classList.toggle('success', success && !!text);
+    if (!text) return;
+    if (error || success) { const heading = document.createElement('strong'); heading.textContent = success ? '✓ Your catalog is on its way!' : '! We couldn’t confirm your request.'; const detail = document.createElement('span'); detail.textContent = text; status.append(heading, detail); } else status.textContent = text;
+  }
   function loadTurnstile() {
     if (window.turnstile) return Promise.resolve();
     if (loading) return loading;
@@ -1688,8 +1692,8 @@ $$('[data-contact-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDe
       const response = await fetch(ENDPOINT, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:form.elements.email.value.trim(),website:form.elements.website.value,token}),signal:controller.signal});
       let result; try { result = await response.json(); } catch { throw new Error('Unexpected service response. Please try again later.'); }
       if (!response.ok || result.success !== true) throw new Error(result.message || 'Unable to send the catalog. Please try again.');
-      message('Your catalog email has been submitted. Please check your inbox and spam folder.');
-    } catch (error) { message(error.name === 'AbortError' ? 'The request timed out. Please check your inbox before trying again.' : error instanceof TypeError ? 'Could not connect. Please try again or email tracy@pgmgolf.com.' : error.message, true); }
+      message('Please check your inbox and spam folder.', false, true);
+    } catch (error) { message(error.name === 'AbortError' ? 'The request timed out. Please check your inbox before trying again.' : error instanceof TypeError ? 'Please check your inbox before trying again, or email tracy@pgmgolf.com.' : error.message, true); }
     finally { clearTimeout(timer); busy = false; token = ''; submit.textContent = 'EMAIL ME THE CATALOG →'; submit.disabled = true; if (widget !== null && window.turnstile) window.turnstile.reset(widget); }
   });
   function entry(parent, label) { if (!parent) return; const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline'; button.textContent = label; button.onclick = openCatalog; parent.append(button); }

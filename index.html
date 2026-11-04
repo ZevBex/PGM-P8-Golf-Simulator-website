@@ -1336,7 +1336,7 @@ $$('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{const d=modeCon
 
 // Configure this endpoint after creating a Formspree form addressed to tracy@pgmgolf.com.
 // Example format: https://formspree.io/f/abcdwxyz
-const CONTACT_FORM_ENDPOINT = 'https://formsubmit.co/ajax/tracy@pgmgolf.com';
+const CONTACT_FORM_ENDPOINT = 'https://catalog-api.mypgmgolf.com/';
 async function sendContactForm(targetForm, statusEl, isModal=false){
  const submit=targetForm.querySelector('[type="submit"]');const original=submit.textContent;const data=new FormData(targetForm);
  if(!targetForm.reportValidity())return;
@@ -1349,13 +1349,13 @@ async function sendContactForm(targetForm, statusEl, isModal=false){
    const mailLink=document.createElement('a');mailLink.href=mailto;mailLink.textContent=' Open email draft';mailLink.style.color='var(--green)';mailLink.style.marginLeft='6px';statusEl.appendChild(mailLink);return;
  }
  submit.disabled=true;submit.textContent='SENDING…';statusEl.textContent='';statusEl.classList.remove('error');
- const controller=new AbortController();const requestTimeout=setTimeout(()=>controller.abort(),20000);
- try{const payload=Object.fromEntries(data.entries());payload._subject='PGM P8 website inquiry — '+(payload.source_page||'Contact');payload._template='table';payload._captcha='false';
+ const controller=new AbortController();const requestTimeout=setTimeout(()=>controller.abort(),30000);
+ try{const payload=Object.fromEntries(data.entries());payload.kind='inquiry';payload.token=await window.pgmInquiryVerification.get(targetForm);
  const response=await fetch(CONTACT_FORM_ENDPOINT,{method:'POST',body:JSON.stringify(payload),headers:{Accept:'application/json','Content-Type':'application/json'},signal:controller.signal});let result;try{result=await response.json()}catch{throw new Error('Mail service returned an unexpected response (HTTP '+response.status+').')}if(!response.ok||!(result.success===true||result.success==='true'))throw new Error(String(result.message||result.error||('Mail service rejected the request (HTTP '+response.status+').')).slice(0,400));
    if(isModal){const name=data.get('fullName')||'there';$('#successMessage').textContent=`Thanks, ${name}. Your inquiry was sent successfully.`;$('#bookingContent').style.display='none';$('#bookingSuccess').classList.add('show');}
    else{targetForm.reset();statusEl.textContent='Thanks — your inquiry was sent. We’ll be in touch.';}
  }catch(err){const reason=err.name==='AbortError'?'The mail service timed out.':err instanceof TypeError?'Cannot connect to the mail service. Check your connection, browser extensions, and HTTPS.':err.message;statusEl.textContent='Unable to send: '+reason+' Please email tracy@pgmgolf.com if this continues.';statusEl.classList.add('error');}
- finally{clearTimeout(requestTimeout);submit.disabled=false;submit.textContent=original;}
+ finally{clearTimeout(requestTimeout);window.pgmInquiryVerification?.reset(targetForm);submit.disabled=false;submit.textContent=original;}
 }
 form.addEventListener('submit',e=>{e.preventDefault();sendContactForm(form,$('#modalContactStatus'),true)});
 $$('[data-contact-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const u=f.querySelector('[name="source_url"]');if(u)u.value=window.location.href+'#contact';sendContactForm(f,$('#inlineContactStatus'),false)})); document.querySelectorAll('a[href^="mailto:"]').forEach(link=>link.addEventListener('click',()=>{const source=describeInquirySource(link,'Email link');try{const url=new URL(link.href);url.searchParams.set('subject','pgmgolf website inquiry — '+source.page);url.searchParams.set('body','Inquiry source: '+source.source+'\nSource section: '+source.page+'\nSource button: '+source.button+'\nSource URL: '+window.location.href+'\n\n');link.href=url.toString();}catch(e){}}));
@@ -1786,4 +1786,10 @@ document.querySelectorAll('.addon-card').forEach(card=>card.addEventListener('ke
 #accessoryMediaThumbs .accessory-media-thumb span:not(.media-play),#componentMediaThumbs .accessory-media-thumb span:not(.media-play),#accessoryMediaThumbs .accessory-media-thumb::after,#componentMediaThumbs .accessory-media-thumb::after{display:none;content:none}
 #componentMediaGallery.single-image #componentMediaThumbs{display:none}
 }
-</style></body></html>
+</style><script id="inquiry-verification">(()=>{
+const widgets=new WeakMap();let loading;
+function load(){if(window.turnstile)return Promise.resolve();if(loading)return loading;loading=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';script.async=true;const timer=setTimeout(()=>{loading=null;script.remove();reject(new Error('Verification could not load. Please try again.'))},15000);script.onload=()=>{clearTimeout(timer);resolve()};script.onerror=()=>{clearTimeout(timer);loading=null;reject(new Error('Verification could not load. Please try again.'))};document.head.append(script)});return loading}
+async function ensure(form){if(widgets.has(form))return;const promise=(async()=>{await load();const box=document.createElement('div');box.style.cssText='grid-column:1/-1;margin:6px 0;width:100%;min-height:65px';form.querySelector('[type="submit"]').before(box);return window.turnstile.render(box,{sitekey:'0x4AAAAAAFxdTlGHk155eZ73',action:'inquiry',theme:'dark',size:'flexible'})})();widgets.set(form,promise);try{await promise}catch(error){widgets.delete(form);throw error}}
+window.pgmInquiryVerification={async get(form){await ensure(form);const token=window.turnstile.getResponse(await widgets.get(form));if(!token)throw new Error('Please complete the verification above the send button, then submit again.');return token},async reset(form){if(widgets.has(form)){try{window.turnstile.reset(await widgets.get(form))}catch{}}}};
+const forms=[document.getElementById('demoForm'),document.getElementById('inlineContactForm')].filter(Boolean);const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting)ensure(e.target).catch(()=>{})},{rootMargin:'150px'});forms.forEach(form=>observer.observe(form));
+})();</script></body></html>

@@ -1446,6 +1446,17 @@ $$('[data-contact-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDe
    hoveredStep=null; selectedStep=count; render(count);
   });
  });
+ // assembly-entry-demo: play once when the component stage becomes visible.
+ let assemblyTimer=null,assemblyPlayed=false,assemblyVisible=false;
+ const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+ function stopAssemblyDemo(){clearTimeout(assemblyTimer);assemblyTimer=null;assemblyPlayed=true;}
+ function showAssemblyStep(count){selectedStep=count;render(count);const rail=document.getElementById('layer-build-steps'),button=stepButtons[count-1];if(rail&&button&&rail.scrollWidth>rail.clientWidth){const left=button.getBoundingClientRect().left-rail.getBoundingClientRect().left+rail.scrollLeft-(rail.clientWidth-button.offsetWidth)/2;rail.scrollTo({left:Math.max(0,left),behavior:reducedMotion.matches?'auto':'smooth'})}}
+ function startAssemblyDemo(){if(assemblyPlayed||reducedMotion.matches||document.hidden||componentDetailModal.classList.contains('open'))return;assemblyPlayed=true;let count=1;showAssemblyStep(count);function advance(){if(!assemblyVisible||document.hidden){assemblyTimer=null;return}showAssemblyStep(++count);assemblyTimer=count<10?setTimeout(advance,200):null}assemblyTimer=setTimeout(advance,250)}
+ stepButtons.forEach(button=>{['pointerenter','pointerdown','focus','click'].forEach(event=>button.addEventListener(event,stopAssemblyDemo))});
+ productCard?.addEventListener('pointerdown',stopAssemblyDemo);productCard?.addEventListener('focus',stopAssemblyDemo);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAssemblyDemo()});
+ reducedMotion.addEventListener?.('change',()=>{if(reducedMotion.matches)stopAssemblyDemo()});
+ if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{for(const entry of entries){assemblyVisible=entry.isIntersecting&&entry.intersectionRatio>=.98;if(assemblyVisible)setTimeout(()=>{if(assemblyVisible)startAssemblyDemo()},250);else if(assemblyTimer)stopAssemblyDemo()}},{threshold:[0,.98,1],rootMargin:'-90px 0px -12px 0px'});observer.observe(document.getElementById('layer-build-stage')||section)}
  render(10);
 })();
 

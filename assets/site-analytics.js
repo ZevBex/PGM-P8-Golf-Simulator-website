@@ -30,7 +30,7 @@
   function readCampaign() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(campaignKey));
-      if (!saved || saved.expires <= Date.now()) return null;
+      if (!saved || saved.expires <= Date.now()) { sessionStorage.removeItem(campaignKey); return null; }
       return cleanCampaign(Object.fromEntries(Object.entries(campaignFields).map(([input, output]) => [input, saved.values?.[output]])));
     } catch { return null; }
   }
@@ -69,7 +69,7 @@
     let referrer = '';
     try { const url = new URL(document.referrer); referrer = url.origin + url.pathname; } catch { /* No referrer. */ }
     const campaign = landingCampaign || readCampaign();
-    if (campaign) {
+    if (landingCampaign) {
       try { sessionStorage.setItem(campaignKey, JSON.stringify({ values: campaign, expires: Date.now() + 30 * 60 * 1000 })); } catch { /* Current-page attribution still works. */ }
     }
     gtag('config', id, {

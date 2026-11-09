@@ -22,8 +22,13 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p _site
-          cp *.html *.css *.js .nojekyll _site/
-          cp -r assets products _site/
+          shopt -s nullglob
+          cp -- *.html *.css *.js *.xml robots.txt CNAME .nojekyll _site/
+          for directory in assets products solutions guides case-studies about support; do
+            if [ -d "$directory" ]; then
+              cp -R -- "$directory" _site/
+            fi
+          done
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

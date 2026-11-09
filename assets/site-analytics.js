@@ -9,6 +9,31 @@
   let allowed = false;
   let loaded = false;
   let returnFocus = null;
+  const campaignKey = 'pgm-campaign-v1';
+  // Fixed marketing labels only: never retain arbitrary query values or personal data.
+  const campaignValues = {
+    utm_source: ['whatsapp', 'email-sig', 'cold-email', 'catalog-pdf', 'alibaba', 'tradeshow', 'parcel-insert', 'linkedin', 'youtube', 'reddit', 'facebook', 'instagram', 'google', 'bing'],
+    utm_medium: ['email', 'referral', 'social', 'video', 'cpc', 'qr', 'partner'],
+    utm_campaign: ['always-on', 'dealer-outreach', 'p8-launch', 'commercial-project', 'room-planning']
+  };
+  const campaignFields = { utm_source: 'campaign_source', utm_medium: 'campaign_medium', utm_campaign: 'campaign_name' };
+  function cleanCampaign(input) {
+    const result = {};
+    for (const [field, values] of Object.entries(campaignValues)) {
+      const value = input[field];
+      if (values.includes(value)) result[campaignFields[field]] = value;
+    }
+    return result.campaign_source && result.campaign_medium ? result : null;
+  }
+  const query = new URLSearchParams(location.search);
+  const landingCampaign = cleanCampaign(Object.fromEntries(Object.keys(campaignValues).map(field => [field, query.get(field)])));
+  function readCampaign() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(campaignKey));
+      if (!saved || saved.expires <= Date.now()) return null;
+      return cleanCampaign(Object.fromEntries(Object.entries(campaignFields).map(([input, output]) => [input, saved.values?.[output]])));
+    } catch { return null; }
+  }
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
   const consent = state => ({ analytics_storage: state, ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
@@ -33,17 +58,26 @@
     allowed = state === 'accepted' && production && !window.__PGM_LOCAL_PREVIEW__;
     window['ga-disable-' + id] = !allowed;
     gtag('consent', 'update', consent(allowed ? 'granted' : 'denied'));
-    if (!allowed) { clearAnalyticsCookies(); return; }
+    if (!allowed) {
+      clearAnalyticsCookies();
+      try { sessionStorage.removeItem(campaignKey); } catch { /* Storage unavailable. */ }
+      return;
+    }
     if (loaded) return;
     loaded = true;
     gtag('js', new Date());
     let referrer = '';
     try { const url = new URL(document.referrer); referrer = url.origin + url.pathname; } catch { /* No referrer. */ }
+    const campaign = landingCampaign || readCampaign();
+    if (campaign) {
+      try { sessionStorage.setItem(campaignKey, JSON.stringify({ values: campaign, expires: Date.now() + 30 * 60 * 1000 })); } catch { /* Current-page attribution still works. */ }
+    }
     gtag('config', id, {
       page_location: location.origin + location.pathname,
       page_referrer: referrer,
       allow_google_signals: false,
-      allow_ad_personalization_signals: false
+      allow_ad_personalization_signals: false,
+      ...(campaign || {})
     });
     const script = document.createElement('script');
     script.async = true;
@@ -78,7 +112,7 @@
 
   // Only fixed labels are allowed. Never pass form values, email addresses or link URLs.
   const labels = {
-    generate_lead: { form_id: ['demo', 'contact'] },
+    generate_lead: { form_id: ['demo', 'contact', 'partner', 'product', 'commercial', 'guide'] },
     catalog_request_success: {},
     contact_click: { method: ['whatsapp', 'email', 'phone'] }
   };

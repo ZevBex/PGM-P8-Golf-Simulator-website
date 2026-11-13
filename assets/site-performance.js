@@ -6,13 +6,13 @@
   const toggle = hero?.querySelector('#heroPlaybackToggle');
   const playbackStatus = hero?.querySelector('#heroPlaybackStatus');
   const desktop = matchMedia('(min-width: 761px)');
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let heroVisible = true;
   let ready = false;
   let userPlayback = null;
   let starting = false;
   function wantsPlayback() {
-    return userPlayback ?? (desktop.matches && !reducedMotion.matches && !navigator.connection?.saveData);
+    // The site owner requests desktop autoplay; retain a visible pause control.
+    return userPlayback ?? (desktop.matches && !navigator.connection?.saveData);
   }
   function canPlay() {
     return wantsPlayback() && !document.hidden && heroVisible;
@@ -22,8 +22,6 @@
     const playing = !video.paused;
     toggle.textContent = playing ? 'Ⅱ PAUSE BACKGROUND' : '▶ PLAY BACKGROUND';
     toggle.setAttribute('aria-label', playing ? 'Pause background video' : 'Play background video');
-    toggle.title = !playing && userPlayback === null && reducedMotion.matches
-      ? 'Reduced motion is enabled. Select to play the background video.' : '';
   }
   function updatePlayback() {
     if (!video) return;
@@ -84,7 +82,6 @@
       }, { threshold: 0.05 }).observe(hero);
     }
     desktop.addEventListener('change', updatePlayback);
-    reducedMotion.addEventListener('change', updatePlayback);
     navigator.connection?.addEventListener('change', updatePlayback);
     document.addEventListener('visibilitychange', updatePlayback);
     window.addEventListener('pageshow', updatePlayback);

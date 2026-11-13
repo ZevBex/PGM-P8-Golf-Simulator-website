@@ -10,6 +10,7 @@
   if (!form) return;
   const status = document.getElementById('inquiryStatus');
   const submit = form.querySelector('[type="submit"]');
+  const context = window.pgmInquiry?.attach(form);
   const production = location.protocol === 'https:' && ['mypgmgolf.com', 'www.mypgmgolf.com'].includes(location.hostname) && !window.__PGM_LOCAL_PREVIEW__;
   let widget, loading, busy = false;
   function message(text, error = false) { status.textContent = text; status.classList.toggle('error', error); }
@@ -43,7 +44,7 @@
     event.preventDefault();
     if (busy || !form.reportValidity()) return;
     if (!production) return message('Local preview only — no inquiry was sent.');
-    busy = true; submit.disabled = true; message('');
+    busy = true; submit.disabled = true; form.setAttribute('aria-busy', 'true'); message('Sending your inquiry…');
     const original = submit.textContent; submit.textContent = 'SENDING…';
     const controller = new AbortController();
     let timer;
@@ -54,12 +55,15 @@
       const values = new FormData(form);
       const country = String(values.get('country') || '').trim();
       const company = String(values.get('companyInfo') || '').trim();
+      const selection = context?.read();
+      const selectionText = selection ? `Product: ${selection.productName}\nProduct ID: ${selection.productId}\nInquiry type: ${selection.inquiryLabel}\nOrigin page: https://mypgmgolf.com/${selection.sourcePath}\n` : '';
       const payload = {
         kind: 'inquiry', token,
         name: String(values.get('name') || '').trim(), email: String(values.get('email') || '').trim(),
-        spaceType: form.dataset.space, interest: form.dataset.interest,
-        message: `Country / market: ${country}\nCompany / website: ${company || 'Not provided'}\n\n${String(values.get('message') || '').trim()}`,
-        inquiry_source: form.dataset.source, source_page: document.title,
+        message: `${selectionText}Country / market: ${country}\nCompany / website: ${company || 'Not provided'}\n\n${String(values.get('message') || '').trim()}`,
+        spaceType: selection ? selection.inquiryLabel : form.dataset.space,
+        interest: selection ? selection.productName : form.dataset.interest,
+        inquiry_source: form.dataset.source, source_page: document.querySelector('meta[property="og:title"]')?.content || document.title,
         source_button: original.trim(), source_url: location.origin + location.pathname
       };
       timer = setTimeout(() => controller.abort(), 30000);
@@ -70,13 +74,13 @@
       let result;
       try { result = await response.json(); } catch { throw new Error('The service returned an unexpected response.'); }
       if (!response.ok || ![true, 'true'].includes(result.success)) throw new Error('The inquiry could not be confirmed. Please email tracy@pgmgolf.com for help.');
-      window.pgmAnalytics?.event('generate_lead', { form_id: form.dataset.formId });
-      form.reset(); message('Thank you — your inquiry has been received. The PGM team will reply by email.');
+      window.pgmAnalytics?.event('generate_lead', { form_id: form.dataset.formId, ...(selection ? { product_id: selection.productId, inquiry_type: selection.inquiryType, source_page_id: selection.sourceId } : {}) });
+      form.reset(); message(selection ? `Thank you — your inquiry about ${selection.productName} has been received. The PGM team will reply by email.` : 'Thank you — your inquiry has been received. The PGM team will reply by email.');
     } catch (error) {
       message(error.name === 'AbortError' || error instanceof TypeError
         ? 'Delivery could not be confirmed. Please contact tracy@pgmgolf.com before submitting again.' : error.message, true);
     } finally {
-      clearTimeout(timer); busy = false; submit.disabled = false; submit.textContent = original;
+      clearTimeout(timer); busy = false; submit.disabled = false; form.removeAttribute('aria-busy'); submit.textContent = original;
       if (widget !== undefined) { try { window.turnstile.reset(widget); } catch { /* A later attempt can reload verification. */ } }
     }
   });

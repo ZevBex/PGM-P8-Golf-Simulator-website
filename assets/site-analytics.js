@@ -12,12 +12,16 @@
   const campaignKey = 'pgm-campaign-v1';
   // Fixed marketing labels only: never retain arbitrary query values or personal data.
   const campaignValues = {
-    utm_source: ['whatsapp', 'email-sig', 'cold-email', 'catalog-pdf', 'alibaba', 'tradeshow', 'parcel-insert', 'linkedin', 'youtube', 'reddit', 'facebook', 'instagram', 'google', 'bing'],
+    utm_source: ['whatsapp', 'email-sig', 'cold-email', 'catalog-pdf', 'alibaba', 'tradeshow', 'parcel-insert', 'linkedin', 'youtube', 'reddit', 'facebook', 'instagram', 'google', 'bing', 'chatgpt.com', 'perplexity.ai', 'claude.ai', 'copilot.microsoft.com', 'gemini.google.com'],
     utm_medium: ['email', 'referral', 'social', 'video', 'cpc', 'qr', 'partner'],
     utm_campaign: ['always-on', 'dealer-outreach', 'p8-launch', 'commercial-project', 'room-planning']
   };
   const campaignFields = { utm_source: 'campaign_source', utm_medium: 'campaign_medium', utm_campaign: 'campaign_name' };
+  const aiSources = new Set(['chatgpt.com', 'perplexity.ai', 'claude.ai', 'copilot.microsoft.com', 'gemini.google.com']);
+  const aiAliases = { chatgpt: 'chatgpt.com', perplexity: 'perplexity.ai', claude: 'claude.ai' };
   function cleanCampaign(input) {
+    input = { ...input, utm_source: Object.hasOwn(aiAliases, input.utm_source) ? aiAliases[input.utm_source] : input.utm_source };
+    if (aiSources.has(input.utm_source) && !input.utm_medium) input.utm_medium = 'referral';
     const result = {};
     for (const [field, values] of Object.entries(campaignValues)) {
       const value = input[field];
@@ -26,6 +30,13 @@
     return result.campaign_source && result.campaign_medium ? result : null;
   }
   const query = new URLSearchParams(location.search);
+  let internalTest = false;
+  try {
+    if (query.get('pgm_test') === '1') sessionStorage.setItem('pgm-internal-test', '1');
+    if (query.get('pgm_test') === '0') sessionStorage.removeItem('pgm-internal-test');
+    internalTest = sessionStorage.getItem('pgm-internal-test') === '1';
+  } catch { internalTest = query.get('pgm_test') === '1'; }
+  if (internalTest) document.documentElement.dataset.pgmInternalTest = 'true';
   const landingCampaign = cleanCampaign(Object.fromEntries(Object.keys(campaignValues).map(field => [field, query.get(field)])));
   function readCampaign() {
     try {
@@ -55,7 +66,7 @@
     }
   }
   function apply(state) {
-    allowed = state === 'accepted' && production && !window.__PGM_LOCAL_PREVIEW__;
+    allowed = state === 'accepted' && production && !window.__PGM_LOCAL_PREVIEW__ && !internalTest;
     window['ga-disable-' + id] = !allowed;
     gtag('consent', 'update', consent(allowed ? 'granted' : 'denied'));
     if (!allowed) {
@@ -67,7 +78,7 @@
     loaded = true;
     gtag('js', new Date());
     let referrer = '';
-    try { const url = new URL(document.referrer); referrer = url.origin + url.pathname; } catch { /* No referrer. */ }
+    try { const url = new URL(document.referrer); referrer = url.origin + (url.origin === location.origin ? url.pathname : '/'); } catch { /* No referrer. */ }
     const campaign = landingCampaign || readCampaign();
     if (landingCampaign) {
       try { sessionStorage.setItem(campaignKey, JSON.stringify({ values: campaign, expires: Date.now() + 30 * 60 * 1000 })); } catch { /* Current-page attribution still works. */ }
@@ -75,6 +86,7 @@
     gtag('config', id, {
       page_location: location.origin + location.pathname,
       page_referrer: referrer,
+      page_title: document.querySelector('meta[property="og:title"]')?.content || document.title,
       allow_google_signals: false,
       allow_ad_personalization_signals: false,
       ...(campaign || {})
@@ -112,7 +124,7 @@
 
   // Only fixed labels are allowed. Never pass form values, email addresses or link URLs.
   const labels = {
-    generate_lead: { form_id: ['demo', 'contact', 'partner', 'product', 'commercial', 'guide'] },
+    generate_lead: { form_id: ['demo', 'contact', 'partner', 'product', 'commercial', 'guide', 'quote'], product_id: window.pgmInquiry?.productIds || [], inquiry_type: ['system', 'component', 'installation', 'dealer'], source_page_id: window.pgmInquiry?.sourceIds || [] },
     catalog_request_success: {},
     contact_click: { method: ['whatsapp', 'email', 'phone'] }
   };

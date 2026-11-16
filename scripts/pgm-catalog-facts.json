@@ -1,0 +1,31 @@
+{
+  "source": "assets/pgm-golf-simulator-catalog.pdf",
+  "sha256": "e596407dab93ff45f9f46b5ef16eab9f515c1b1876a0c1c76965fff3a0e1c414",
+  "reviewDate": "2026-11-16",
+  "packagePdfPage": 9,
+  "packagePrintedPage": "08",
+  "priceCurrency": null,
+  "currencyNote": "The catalog prints a dollar sign without an ISO currency code; owner confirmation requested.",
+  "packages": [
+    {
+      "name": "Standard Version",
+      "amount": 13300,
+      "printedPrice": "$13,300"
+    },
+    {
+      "name": "Flagship Version",
+      "amount": 15100,
+      "printedPrice": "$15,100"
+    },
+    {
+      "name": "Performance Package",
+      "amount": 19400,
+      "printedPrice": "$19,400"
+    }
+  ],
+  "projectPdfPage": 27,
+  "projectPrintedPage": "26",
+  "projectImage": "assets/optimized/pgm-catalog-global-projects-900w.webp",
+  "projectImageWidth": 900,
+  "projectImageHeight": 1274
+}

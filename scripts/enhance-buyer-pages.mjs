@@ -6,7 +6,6 @@ import assert from 'node:assert/strict';
 // sitemap dates are changed; product facts remain tied to the published catalog.
 const root = path.resolve(import.meta.dirname, '..');
 const origin = 'https://mypgmgolf.com';
-const date = '2026-11-16';
 const base = '../../';
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'scripts/pgm-catalog-facts.json'), 'utf8'));
 const worksheet = `${base}assets/pgm-room-measurement-worksheet.pdf`;
@@ -34,12 +33,12 @@ const demonstration = section('product-demonstration', 'Watch the PGM simulator 
 
 const quoteChecklist = section('quote-checklist', 'What determines a PGM P8 golf simulator price?', `<div class="prose"><p>A useful P8 quotation separates the chosen equipment from delivery, local preparation and any ongoing services. Use an itemized scope to confirm the supplied equipment and the work your local team will arrange.</p><ol class="list"><li><strong>Hardware and options:</strong> identify the package, projector and computer models, screen format, motion plate and any additional components.</li><li><strong>Room work and installation:</strong> list what the supplier provides and what your local team must prepare, install or commission.</li><li><strong>Delivery to your destination:</strong> confirm packing, freight, agreed delivery terms and who handles destination charges.</li><li><strong>Software and ongoing services:</strong> distinguish the catalog's permanent free OTA updates from commercial-use rights, course access and separately supplied services.</li><li><strong>Support responsibilities:</strong> confirm written warranty terms by component, the diagnostic process and replacement-part arrangements.</li></ol><p>No fixed system price, installation fee or recurring charge is stated here. The final amount and responsibilities depend on the agreed configuration and destination.</p></div><div class="buyer-next"><h3>Send a brief the team can quote against.</h3><p>Include your country, home or commercial use, preferred package, clear room dimensions and equipment you already own. Use the <a href="${worksheet}" download>room measurement worksheet (PDF)</a> if you are still collecting the site information.</p><a class="button" href="#inquiry">Request an itemized P8 quote →</a></div>`, 'Compare the complete scope of supply.');
 
-const catalogPriceNote = `<p class="note" id="catalog-price-note">Catalog package prices are reproduced from <a href="${base}${catalog.source}#page=${catalog.packagePdfPage}">PDF page ${catalog.packagePdfPage} / printed page ${catalog.packagePrintedPage}</a>, reviewed 16 November 2026. ${catalog.priceCurrency ? `Prices are in ${escape(catalog.priceCurrency)}.` : 'The $ symbol is reproduced as printed; confirm the applicable currency with PGM.'} Confirm the current quotation, included equipment, delivery, destination charges and installation scope before ordering.</p>`;
+const catalogPriceNote = `<p class="note" id="catalog-price-note">Catalog package prices are reproduced from <a href="${base}${catalog.source}#page=${catalog.packagePdfPage}">PDF page ${catalog.packagePdfPage} / printed page ${catalog.packagePrintedPage}</a>, reviewed 16 November 2026. ${catalog.priceCurrency ? `All three package prices are in US dollars (${escape(catalog.priceCurrency)}), confirmed by PGM on 17 November 2026.` : 'The $ symbol is reproduced as printed; confirm the applicable currency with PGM.'} Confirm the current quotation, included equipment, delivery, destination charges and installation scope before ordering.</p>`;
 const catalogProjects = section('catalog-projects', 'Installation photographs in the PGM catalog.', `<div class="split"><div class="prose"><h3>See home, commercial and golf-store examples.</h3><p>The catalog's Global Projects page includes photographs labelled Commercial Project, Home Project, Golf Store and Trade Show, alongside other application examples.</p><p>Use these photographs to discuss the screen layout, room finish and type of installation you have in mind. For a reference relevant to your project, ask the team about its configuration, room dimensions and installation scope.</p><a class="button secondary" href="${base}${catalog.source}#page=${catalog.projectPdfPage}" target="_blank" rel="noopener noreferrer">View catalog project photographs · PDF ↗</a><p class="fine-print">Source: PGM catalog, PDF page ${catalog.projectPdfPage} / printed page ${catalog.projectPrintedPage}. Reviewed 16 November 2026.</p></div><figure class="buyer-case"><a href="${base}${catalog.source}#page=${catalog.projectPdfPage}" target="_blank" rel="noopener noreferrer"><img src="${base}${catalog.projectImage}" width="${catalog.projectImageWidth}" height="${catalog.projectImageHeight}" alt="PGM catalog Global Projects page with commercial, home and golf-store installation photographs" loading="lazy" decoding="async"></a><figcaption>Complete catalog project page. Open the source PDF for a larger view.</figcaption></figure></div>`);
 
 const configurations = [
-  {file:'guides/golf-simulator-room-size/index.html', title:'Golf Simulator Room Dimensions & Ceiling Height | PGM', description:'Check PGM golf simulator room dimensions in metres and feet, compare screen layouts and ceiling height, and download a room measurement worksheet.', heading:'Golf simulator room dimensions & ceiling height.', kind:'room'},
-  {file:'products/pgm-p8-golf-simulator/index.html', title:'PGM P8 Golf Simulator Prices, Packages & Room Size', description:'Compare PGM P8 catalog prices and Standard, Flagship and Performance packages. Watch the demo, view installation photographs and check room requirements.', heading:'PGM P8 golf simulator prices.', kind:'product'}
+  {file:'guides/golf-simulator-room-size/index.html', title:'Golf Simulator Room Dimensions & Ceiling Height | PGM', description:'Check PGM golf simulator room dimensions in metres and feet, compare screen layouts and ceiling height, and download a room measurement worksheet.', heading:'Golf simulator room dimensions & ceiling height.', kind:'room', modified:'2026-11-16'},
+  {file:'products/pgm-p8-golf-simulator/index.html', title:'PGM P8 Golf Simulator Prices, Packages & Room Size', description:'Compare PGM P8 catalog prices and Standard, Flagship and Performance packages. Watch the demo, view installation photographs and check room requirements.', heading:'PGM P8 golf simulator prices.', kind:'product', modified:'2026-11-17'}
 ];
 for (const config of configurations) {
   const file = path.join(root, config.file);
@@ -84,10 +83,28 @@ for (const config of configurations) {
     const data = JSON.parse(text);
     for (const item of data['@graph'] || [data]) {
       if (item.url === origin + '/' + config.file.replace(/index\.html$/, '') && ['Article','ItemPage'].includes(item['@type'])) {
-        item.name = config.title; item.description = config.description; item.dateModified = date;
+        item.name = config.title; item.description = config.description; item.dateModified = config.modified;
         if (item.headline) item.headline = config.heading;
       }
-      if (config.kind === 'product' && item['@type'] === 'Product') item.description = config.description;
+      if (config.kind === 'product' && item['@type'] === 'Product') {
+        item.description = config.description;
+        if (catalog.priceCurrency) {
+          // Keep each named configuration and its exact price. A variant price
+          // range must not be represented as an AggregateOffer.
+          item.offers = catalog.packages.map((pack, index) => ({
+            '@type': 'Offer',
+            '@id': `${item.url}#catalog-offer-${index + 1}`,
+            name: `PGM P8 ${pack.name}`,
+            url: `${item.url}#p8-price-${index + 1}`,
+            price: String(pack.amount),
+            priceCurrency: catalog.priceCurrency,
+            description: `${pack.name} catalog package price. Confirm the current quotation, included equipment, delivery, destination charges and installation scope before ordering.`,
+            seller: {'@id': `${origin}/#organization`}
+          }));
+        } else {
+          delete item.offers;
+        }
+      }
     }
     return `<script type="application/ld+json">${JSON.stringify(data).replaceAll('<','\\u003c')}</script>`;
   });
@@ -95,11 +112,11 @@ for (const config of configurations) {
 }
 const sitemapFile = path.join(root, 'sitemap.xml');
 let sitemap = fs.readFileSync(sitemapFile, 'utf8');
-for (const {file} of configurations) {
+for (const {file, modified} of configurations) {
   const url = origin + '/' + file.replace(/index\.html$/, '');
   const expression = new RegExp(`(<loc>${url.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}</loc>\\s*<lastmod>)[^<]+`);
   assert.ok(expression.test(sitemap), 'Missing sitemap URL: '+url);
-  sitemap = sitemap.replace(expression, `$1${date}`);
+  sitemap = sitemap.replace(expression, `$1${modified}`);
 }
 fs.writeFileSync(sitemapFile, sitemap);
 console.log('Updated two buyer pages and their sitemap modification dates.');

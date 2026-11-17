@@ -14,9 +14,12 @@ P8 product page, and their sitemap modification dates.
    step last. Regenerate guarded local previews separately when available.
 
 `pgm-catalog-facts.json` records the visually checked package prices and source
-pages. The scanned source PDF has no extractable text. Its printed dollar sign
-does not establish an ISO currency code. Update `priceCurrency` only from the
-owner's confirmation; do not invent availability, ratings or offer conditions.
+pages. The scanned source PDF has no extractable text. The owner confirmed on
+2026-11-17 that all three prices are in US dollars (USD); the facts file records
+this separately from the catalog review. The Product has three named Offer
+entries matching the visible package table, not an AggregateOffer price range.
+Do not invent availability, ratings, expiry dates or offer conditions. Reconfirm
+with the owner before changing the currency or catalog amounts.
 
 The catalog project photographs identify applications, not named customers,
 countries, installation dates or business results. Exact computer and projector

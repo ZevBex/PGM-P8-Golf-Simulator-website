@@ -4,8 +4,9 @@
   "reviewDate": "2026-11-16",
   "packagePdfPage": 9,
   "packagePrintedPage": "08",
-  "priceCurrency": null,
-  "currencyNote": "The catalog prints a dollar sign without an ISO currency code; owner confirmation requested.",
+  "priceCurrency": "USD",
+  "currencyNote": "The site owner confirmed that all three catalog package prices are in US dollars (USD) on 2026-11-17.",
+  "currencyConfirmedDate": "2026-11-17",
   "packages": [
     {
       "name": "Standard Version",

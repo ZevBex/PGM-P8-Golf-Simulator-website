@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="390" viewBox="0 0 480 390" role="img" aria-labelledby="title desc">
+  <title id="title">PGM standard single-screen room dimensions</title>
+  <desc id="desc">The room is 6 metres deep and 4 metres wide in plan, with 3 metres of clear height. The screen and hitting area indicate orientation only.</desc>
+  <rect width="480" height="390" rx="12" fill="#101e20"/>
+  <g font-family="Arial, sans-serif" fill="#e8f3ee">
+    <text x="24" y="36" font-size="16" font-weight="700" letter-spacing="1">PLAN VIEW</text>
+    <path d="M52 78H268 M52 71v14 M268 71v14 M289 100v144 M282 100h14 M282 244h14" stroke="#9ce4b3" fill="none" stroke-width="2"/>
+    <text x="160" y="65" text-anchor="middle" font-size="19">6.0 m / 19.7 ft</text>
+    <rect x="52" y="100" width="216" height="144" fill="#1c3030" stroke="#acc5be" stroke-width="2"/>
+    <path d="M60 111v122" stroke="#9ce4b3" stroke-width="6"/>
+    <text x="81" y="172" transform="rotate(-90 81 172)" text-anchor="middle" font-size="16">Screen</text>
+    <rect x="152" y="142" width="43" height="45" rx="3" fill="#2c4942" stroke="#9ce4b3" stroke-dasharray="4 3"/>
+    <circle cx="172" cy="164" r="4" fill="#f4f8f5"/>
+    <text x="174" y="213" text-anchor="middle" font-size="16">Hitting area</text>
+    <text x="310" y="157" font-size="16" fill="#b9cbc4">Clear width</text>
+    <text x="310" y="184" font-size="19">4.0 m / 13.1 ft</text>
+    <path d="M24 266h432" stroke="#435856"/>
+    <text x="24" y="297" font-size="16" font-weight="700" letter-spacing="1">CLEAR HEIGHT</text>
+    <path d="M52 315h83 M52 369h83 M75 315v54 M69 321l6-6 6 6 M69 363l6 6 6-6" fill="none" stroke="#9ce4b3" stroke-width="2"/>
+    <text x="154" y="337" font-size="21" font-weight="700">3.0 m / 9.8 ft</text>
+    <text x="154" y="362" font-size="16" fill="#bdcfc9">Floor to lowest obstruction</text>
+  </g>
+</svg>

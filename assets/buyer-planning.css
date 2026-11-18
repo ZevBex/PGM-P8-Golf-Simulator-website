@@ -11,4 +11,12 @@
 .buyer-case{margin:0;border:1px solid #355047;border-radius:12px;overflow:hidden;background:#0b1518}
 .buyer-case img{display:block;width:100%;height:auto;max-height:640px;object-fit:contain;background:#070707}
 .buyer-case figcaption{padding:14px 18px;color:#b5c4c5;font-size:.8rem}
+.one-bay-table table{min-width:0;table-layout:fixed}
+.one-bay-table thead th:first-child{width:32%}
+.one-bay-table th,.one-bay-table td{overflow-wrap:break-word}
+.one-bay-table td strong{display:inline}
+@media(max-width:600px){
+  .one-bay-table th[scope=row],.one-bay-table thead th:first-child{min-width:0;position:static}
+  .one-bay-table th,.one-bay-table td{padding:12px}
+}
 @media(max-width:760px){.buyer-download{padding:22px}.buyer-demo figcaption{padding:14px 16px}}

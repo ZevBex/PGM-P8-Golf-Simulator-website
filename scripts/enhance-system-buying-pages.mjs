@@ -23,7 +23,7 @@ function insert(html, name, content, before) {
   return html.replace(before, () => block + before);
 }
 // Attribute replacement callbacks preserve dollar signs as literal copy.
-function updateHead(html, title, description, heading) {
+function updateHead(html, title, description, heading, modified) {
   const attr = s => s.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
   html = html.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${attr(title)}</title>`);
   for (const key of ['name="description"', 'property="og:description"', 'name="twitter:description"']) {
@@ -37,7 +37,7 @@ function updateHead(html, title, description, heading) {
     const data = JSON.parse(text);
     for (const node of data['@graph'] || [data]) {
       if (['WebPage', 'ItemPage'].includes(node['@type'])) {
-        node.name = title; node.description = description; node.dateModified = '2026-11-17';
+        node.name = title; node.description = description; node.dateModified = modified;
       }
       if (node['@type'] === 'Product') node.description = description;
     }
@@ -49,7 +49,7 @@ const p8File = 'products/pgm-p8-golf-simulator/index.html';
 let p8 = fs.readFileSync(path.join(root, p8File), 'utf8');
 p8 = updateHead(p8, 'PGM P8 Golf Simulator Packages, Prices & Room Size',
   'Compare complete PGM P8 golf simulator packages: Standard $13,300, Flagship $15,100 and Performance $19,400 USD. Check equipment, room size and quotation scope.',
-  'PGM P8 complete golf simulator packages.');
+  'PGM P8 complete golf simulator packages.', '2026-11-17');
 p8 = p8.replace(/<p class="lead">[\s\S]*?<\/p>/, () => '<p class="lead">Choose a complete PGM P8 simulator system with shot tracking, software, projection, computer and playing surfaces. Compare three catalog packages from $13,300 USD, then confirm the configuration and delivery scope for your home or commercial venue.</p>');
 p8 = p8.replace('<a class="button" href="#inquiry">Request a P8 configuration →</a>', '<a class="button" href="#inquiry">Request a complete-system quote →</a>');
 p8 = p8.replace('<button class="button" type="submit">Request a complete-system quote →</button>', '<button class="button" type="submit">Request a P8 configuration →</button>');
@@ -62,18 +62,39 @@ const commercialFile = 'solutions/commercial-golf-simulator/index.html';
 let commercial = fs.readFileSync(path.join(root, commercialFile), 'utf8');
 commercial = updateHead(commercial, 'Commercial Golf Simulator Packages & Cost Planning | PGM',
   'Plan a complete PGM P8 commercial golf simulator system. Compare USD catalog package prices, included equipment, bay requirements and the scope of a venue quote.',
-  'Commercial golf simulator packages for your venue.');
+  'Commercial golf simulator packages for your venue.', '2026-11-18');
 commercial = commercial.replace(/<p class="lead">[\s\S]*?<\/p>/, () => '<p class="lead">Compare complete PGM P8 systems for a golf studio, training facility or hospitality venue. Start with the equipment package, then plan bay layout, commercial software rights and the full cost of getting your venue ready to play.</p>');
 commercial = commercial.replace('<a class="button" href="#inquiry">Discuss a commercial project →</a>', '<a class="button" href="#inquiry">Request a commercial system quote →</a>');
 commercial = commercial.replace('<button class="button" type="submit">Request a commercial system quote →</button>', '<button class="button" type="submit">Discuss a commercial project →</button>');
-commercial = commercial.replace(/<nav class="jump-links" aria-label="On this page">[\s\S]*?<\/nav>/, () => '<nav class="jump-links" aria-label="On this page"><a href="#packages">Packages & cost</a><a href="#applications">Venue types</a><a href="#planning">Bay planning</a><a href="#operation">Daily operation</a><a href="#venue-brief">Prepare a quote brief</a></nav>');
+commercial = commercial.replace(/<nav class="jump-links" aria-label="On this page">[\s\S]*?<\/nav>/, () => '<nav class="jump-links" aria-label="On this page"><a href="#packages">Packages & cost</a><a href="#one-bay-budget">Single-bay budget</a><a href="#applications">Venue types</a><a href="#planning">Bay planning</a><a href="#operation">Daily operation</a><a href="#venue-brief">Prepare a quote brief</a></nav>');
 if (!commercial.includes('href="../../assets/buyer-planning.css')) commercial = commercial.replace('</head>', '<link rel="stylesheet" href="../../assets/buyer-planning.css?v=20261116"></head>');
 
+commercial = commercial.replace(/(assets\/buyer-planning\.css\?v=)\d+/, (_, prefix) => prefix + '20261118');
+
 const priceRows = facts.packages.map((p, i) => `<tr><th scope="row">${p.name}</th><td><strong>${p.printedPrice} USD</strong></td><td>${i === 0 ? '2K laser projector' : '4K laser projector'}</td><td>${i === 2 ? 'PGM 8-way motion swing plate listed' : 'Motion swing plate not listed'}</td></tr>`).join('');
+const standardPackage = facts.packages.find(pack => pack.name === 'Standard Version');
+assert.ok(standardPackage, 'Standard package required for the one-bay budget');
+const budgetItems = [
+  ['P8 Standard equipment', `${standardPackage.printedPrice} USD catalog price`, 'Ask PGM to confirm the current price, exact models and quantities for one bay.'],
+  ['Freight and delivery', 'Freight quote needed', 'Give PGM or your forwarder the delivery postcode and unloading access. Ask which destination charges the delivery terms cover.'],
+  ['Import duties and taxes', 'Destination estimate needed', 'Give your customs broker the destination, equipment list and delivery terms. Ask which import charges you will pay locally.'],
+  ['Room preparation', 'Local site quote needed', 'Give your contractor the measured plan, floor finish, ceiling obstructions and available power. Ask for an itemized site-work quote.'],
+  ['Installation and commissioning', 'Scope and fee to confirm', 'Ask PGM and your installer who mounts the equipment, calibrates the system and tests the finished bay. Request a price for the agreed work.'],
+  ['Commercial software', 'Licence and fees to confirm', 'Tell PGM whether customers will pay to play. Ask for written usage rights and separate any setup fee from recurring charges.']
+];
+const budgetRows = budgetItems.map(([item, allowance, instruction]) =>
+  `<tr><th scope="row">${item}</th><td><strong>${allowance}</strong><br>${instruction}</td></tr>`
+).join('');
+const budget = `<div class="buyer-next" id="one-bay-budget"><h3>What will one commercial golf simulator bay cost to open?</h3>
+<p>For one P8 Standard bay, start your equipment budget at ${standardPackage.printedPrice} USD. Use the lines below to turn that figure into an opening budget for your venue.</p>
+<div class="table-scroll one-bay-table"><table><caption>One-bay budget worksheet · P8 Standard</caption><thead><tr><th scope="col">Budget item</th><th scope="col">Amount or quote to obtain</th></tr></thead><tbody>${budgetRows}</tbody></table></div>
+<p><strong>Opening budget:</strong> Start with the confirmed equipment quote. Add only one-time charges outside its scope. If delivery or installation is bundled, count it once. Keep monthly and annual software fees in a separate operating budget.</p>
+<p><a href="${b}guides/golf-simulator-room-size/#single-bay-plan">Check your bay against the dimensioned room plan →</a></p></div>`;
 const packages = section('packages', 'Commercial golf simulator cost: start with the equipment package.',
   'The PGM catalog lists three P8 system packages. Use these equipment prices as a starting point for an itemized commercial project quotation.',
   `<div class="table-scroll" role="region" aria-label="P8 commercial equipment package references, scroll to compare" tabindex="0"><table><caption>PGM P8 catalog package prices · USD · scroll to compare →</caption><thead><tr><th scope="col">Package</th><th scope="col">Catalog equipment price</th><th scope="col">Projection</th><th scope="col">Motion option</th></tr></thead><tbody>${priceRows}</tbody></table></div>
-<div class="grid two"><article class="card"><h3>What the three system packages include</h3><ul class="list"><li>PGM four-lens high-speed detector and P8 Genuine System.</li><li>Automatic tee-up and a 23.5-inch mirror touchscreen kiosk.</li><li>Stereo sound and a double-layer impact screen.</li><li>Professional hitting mat and artificial grass floor.</li><li>A laser projector and computer, with specifications varying by package.</li></ul><p>All three lists state permanent free OTA updates. Commercial-use rights, course access and separately supplied services need confirmation.</p></article><article class="card"><h3>What the project quote must also resolve</h3><ul class="list"><li>Exact computer and projector models, screen size and bay structure.</li><li>Any local room preparation, electrical work, acoustics and installation.</li><li>Packing, freight, delivery terms, import taxes and destination charges.</li><li>Software permissions, ongoing charges and commissioning responsibilities.</li><li>Written support, warranty and replacement-part arrangements.</li></ul><p>A catalog system price alone does not establish a delivered and installed venue budget.</p></article></div>
+<div class="grid two"><article class="card"><h3>What the three system packages include</h3><ul class="list"><li>PGM four-lens high-speed detector and P8 Genuine System.</li><li>Automatic tee-up and a 23.5-inch mirror touchscreen kiosk.</li><li>Stereo sound and a double-layer impact screen.</li><li>Professional hitting mat and artificial grass floor.</li><li>A laser projector and computer, with specifications varying by package.</li></ul><p>All three lists state permanent free OTA updates. Commercial-use rights, course access and separately supplied services need confirmation.</p></article><article class="card"><h3>Which costs belong to the venue?</h3><p>The same P8 package can have a different opening cost in a finished studio and in an empty unit that needs power, flooring and mounting work. Start with the <a href="#one-bay-budget">single-bay budget worksheet</a> and ask each supplier to identify the work covered by their quote.</p></article></div>
+${budget}
 <p class="note">Source: <a href="${source}">PGM catalog, PDF page ${facts.packagePdfPage} / printed page ${facts.packagePrintedPage}</a>, reviewed 16 November 2026. PGM confirmed USD on 17 November 2026. Confirm the current quotation and commercial configuration before ordering.</p>
 <div class="actions"><a class="button" href="#inquiry">Request my commercial P8 quote →</a><a class="button secondary" href="${b}products/pgm-p8-golf-simulator/#packages">Full P8 package comparison →</a></div>`, true);
 commercial = insert(commercial, 'commercial-packages', packages, '<section class="section alt" id="planning">');
@@ -94,11 +115,11 @@ fs.writeFileSync(path.join(root, commercialFile), commercial);
 
 const sitemapFile = path.join(root, 'sitemap.xml');
 let sitemap = fs.readFileSync(sitemapFile, 'utf8');
-for (const file of [p8File, commercialFile]) {
+for (const [file, modified] of [[p8File, '2026-11-17'], [commercialFile, '2026-11-18']]) {
   const url = origin + '/' + file.replace(/index\.html$/, '');
   const re = new RegExp(`(<loc>${url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</loc>\\s*<lastmod>)[^<]+`);
   assert.ok(re.test(sitemap), `Sitemap URL missing: ${url}`);
-  sitemap = sitemap.replace(re, (_, p) => p + '2026-11-17');
+  sitemap = sitemap.replace(re, (_, p) => p + modified);
 }
 fs.writeFileSync(sitemapFile, sitemap);
 console.log('Updated P8 and commercial complete-system buying content.');

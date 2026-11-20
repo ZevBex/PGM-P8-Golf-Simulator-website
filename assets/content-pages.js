@@ -69,13 +69,17 @@
       timer = setTimeout(() => controller.abort(), 30000);
       const response = await fetch('https://catalog-api.mypgmgolf.com/', {
         method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload), signal: controller.signal
+        body: JSON.stringify(window.pgmInquiry.submission(form, { ...payload, country, company,
+          product_id: selection?.productId, inquiry_type: selection?.inquiryLabel,
+          origin_page: selection ? 'https://mypgmgolf.com/' + selection.sourcePath : payload.source_url })), signal: controller.signal
       });
       let result;
       try { result = await response.json(); } catch { throw new Error('The service returned an unexpected response.'); }
       if (!response.ok || ![true, 'true'].includes(result.success)) throw new Error('The inquiry could not be confirmed. Please email tracy@pgmgolf.com for help.');
+      window.pgmInquiry.complete(form);
       window.pgmAnalytics?.event('generate_lead', { form_id: form.dataset.formId, ...(selection ? { product_id: selection.productId, inquiry_type: selection.inquiryType, source_page_id: selection.sourceId } : {}) });
       form.reset(); message(selection ? `Thank you — your inquiry about ${selection.productName} has been received. The PGM team will reply by email.` : 'Thank you — your inquiry has been received. The PGM team will reply by email.');
+      if (result.inquiry_id) status.append(' Reference: ' + result.inquiry_id);
     } catch (error) {
       message(error.name === 'AbortError' || error instanceof TypeError
         ? 'Delivery could not be confirmed. Please contact tracy@pgmgolf.com before submitting again.' : error.message, true);

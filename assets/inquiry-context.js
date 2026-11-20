@@ -60,5 +60,16 @@
       return { productId, inquiryType, productName: products[productId].name, inquiryLabel: types[inquiryType], sourceId, sourcePath };
     } });
   }
-  window.pgmInquiry = Object.freeze({ products, productIds: Object.freeze(Object.keys(products)), sourceIds: Object.freeze([...Object.keys(sources), ...Object.keys(products)]), types, resolve, attach });
+  const submissions = new WeakMap();
+  function submission(form, values) {
+    const signature = JSON.stringify([...new FormData(form)].filter(([key]) => !['cf-turnstile-response','token','source_url'].includes(key)));
+    let attempt = submissions.get(form);
+    if (!attempt || attempt.signature !== signature) {
+      attempt = { signature, id: crypto.randomUUID(), channel: window.pgmAnalytics?.channel?.() || '' };
+      submissions.set(form, attempt);
+    }
+    return { ...values, request_id: attempt.id, channel: attempt.channel,
+      internal_test: document.documentElement.dataset.pgmInternalTest === 'true' };
+  }
+  window.pgmInquiry = Object.freeze({ products, productIds: Object.freeze(Object.keys(products)), sourceIds: Object.freeze([...Object.keys(sources), ...Object.keys(products)]), types, resolve, attach, submission, complete: form => submissions.delete(form) });
 })();

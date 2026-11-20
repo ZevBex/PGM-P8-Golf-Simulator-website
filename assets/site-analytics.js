@@ -129,6 +129,11 @@
     contact_click: { method: ['whatsapp', 'email', 'phone'] }
   };
   window.pgmAnalytics = Object.freeze({
+    channel() {
+      if (!allowed || readChoice() !== 'accepted') return '';
+      const campaign = readCampaign();
+      return campaign ? campaign.campaign_source + '/' + campaign.campaign_medium : '';
+    },
     event(name, params = {}) {
       if (!allowed || !Object.hasOwn(labels, name)) return;
       const clean = {};

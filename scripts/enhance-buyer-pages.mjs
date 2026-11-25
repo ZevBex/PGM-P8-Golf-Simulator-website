@@ -30,6 +30,27 @@ const bayPlan = section('single-bay-plan', 'Will a single-screen golf simulator 
 <p>Send your clear depth, width and lowest height, a side photo of any overhead obstruction, and whether left- and right-handed players will share the bay. The installer can then review the hitting position and swing space with you.</p>
 <a href="#inquiry">Send my room dimensions →</a></div></div>`);
 
+const roomCheck = section('room-size-check', 'Check your golf simulator room dimensions', `
+<form id="room-size-form" class="form-grid room-size-form" aria-describedby="room-size-help" hidden>
+  <div class="field full">
+    <label for="room-unit">Measurement units</label>
+    <select id="room-unit" name="unit"><option value="ft">Feet (decimal)</option><option value="m">Metres</option></select>
+  </div>
+  <div class="field"><label for="room-depth">Clear depth</label><input id="room-depth" name="depth" type="number" inputmode="decimal" min="0.01" step="any" required></div>
+  <div class="field"><label for="room-width">Clear width</label><input id="room-width" name="width" type="number" inputmode="decimal" min="0.01" step="any" required></div>
+  <div class="field"><label for="room-height">Lowest clear ceiling height</label><input id="room-height" name="height" type="number" inputmode="decimal" min="0.01" step="any" required></div>
+  <div class="actions"><button class="button" type="submit">Compare room sizes</button></div>
+</form>
+<div class="prose" role="status">
+  <p id="room-size-standard" hidden></p>
+  <p id="room-size-minimum" hidden></p>
+  <p id="room-size-feedback" hidden></p>
+</div>
+<button class="button secondary" id="room-size-add-to-inquiry" type="button" hidden>Add measurements to my inquiry</button>
+<noscript><p><a href="#dimensions">Compare your measurements with the published sizes below.</a></p></noscript>
+<p id="room-size-help" class="note">Use the lowest obstruction over the hitting area, such as a beam or garage-door track. The check compares the three measurements against catalog layouts. Safe swing clearance, screen placement and equipment mounting require a project review.</p>`,
+'Measure your usable depth and width, then measure from the finished floor to the lowest point over the hitting area.');
+
 const roomWorksheet = section('room-worksheet', 'Build a room brief your installer can review.', `
 <div class="split"><div class="prose"><h3>Download the room measurement worksheet.</h3><p>Use the one-page worksheet to collect clear width, depth and height in one set of units. Record the lowest beam or light fitting, doors, windows and the players who will use the bay.</p><p>Sketch your room and mark the equipment you already own. Email the completed sheet with room photos, or copy the measurements into the enquiry form below.</p><p>A floor plan and photos help the team review the proposed screen, hitting position, projector and access together. The worksheet is a planning brief, not an installation drawing or approval of swing clearance.</p></div><aside class="buyer-download" aria-labelledby="worksheet-download-title"><span class="eyebrow">Room planning worksheet</span><h3 id="worksheet-download-title">Measure once. Keep the details together.</h3><p>A printable sheet for your room dimensions, obstructions, players and existing equipment.</p><a class="button" href="${worksheet}" download>Download measurement sheet · PDF</a><p class="fine-print">1 page · no sign-up required</p><a href="mailto:tracy@pgmgolf.com">Email your completed brief →</a></aside></div>
 <div class="buyer-next"><h3>Use the room brief to choose your next step.</h3><p>Review the <a href="${base}products/pgm-p8-golf-simulator/#packages">PGM P8 package comparison</a> for the complete system, or discuss <a href="${base}solutions/commercial-golf-simulator/">commercial bay layout and circulation</a> for a venue. A larger overall room does not remove the need to check equipment positions and the full swing envelope.</p><a class="button secondary" href="#inquiry">Send my room dimensions →</a></div>`, 'Turn your golf simulator room dimensions into a practical configuration enquiry.');
@@ -44,7 +65,7 @@ const catalogPriceNote = `<p class="note" id="catalog-price-note">Catalog packag
 const catalogProjects = section('catalog-projects', 'Installation photographs in the PGM catalog.', `<div class="split"><div class="prose"><h3>See home, commercial and golf-store examples.</h3><p>The catalog's Global Projects page includes photographs labelled Commercial Project, Home Project, Golf Store and Trade Show, alongside other application examples.</p><p>Use these photographs to discuss the screen layout, room finish and type of installation you have in mind. For a reference relevant to your project, ask the team about its configuration, room dimensions and installation scope.</p><a class="button secondary" href="${base}${catalog.source}#page=${catalog.projectPdfPage}" target="_blank" rel="noopener noreferrer">View catalog project photographs · PDF ↗</a><p class="fine-print">Source: PGM catalog, PDF page ${catalog.projectPdfPage} / printed page ${catalog.projectPrintedPage}. Reviewed 16 November 2026.</p></div><figure class="buyer-case"><a href="${base}${catalog.source}#page=${catalog.projectPdfPage}" target="_blank" rel="noopener noreferrer"><img src="${base}${catalog.projectImage}" width="${catalog.projectImageWidth}" height="${catalog.projectImageHeight}" alt="PGM catalog Global Projects page with commercial, home and golf-store installation photographs" loading="lazy" decoding="async"></a><figcaption>Complete catalog project page. Open the source PDF for a larger view.</figcaption></figure></div>`);
 
 const configurations = [
-  {file:'guides/golf-simulator-room-size/index.html', title:'Golf Simulator Room Dimensions & Ceiling Height | PGM', description:'Check PGM golf simulator room dimensions in metres and feet, compare screen layouts and ceiling height, and download a room measurement worksheet.', heading:'Golf simulator room dimensions & ceiling height.', kind:'room', modified:'2026-11-18'},
+  {file:'guides/golf-simulator-room-size/index.html', title:'Golf Simulator Room Dimensions & Ceiling Height | PGM', description:'Check your golf simulator room dimensions in feet or metres against PGM’s single-screen layouts. Compare ceiling height and request a room review.', heading:'Golf simulator room dimensions & ceiling height.', kind:'room', modified:'2026-11-25'},
   {file:'products/pgm-p8-golf-simulator/index.html', title:'PGM P8 Golf Simulator Prices, Packages & Room Size', description:'Compare PGM P8 catalog prices and Standard, Flagship and Performance packages. Watch the demo, view installation photographs and check room requirements.', heading:'PGM P8 golf simulator prices.', kind:'product', modified:'2026-11-17'}
 ];
 for (const config of configurations) {
@@ -59,8 +80,12 @@ for (const config of configurations) {
     .replace(/<h1>.*?<\/h1>/, `<h1>${escape(config.heading)}</h1>`);
   if (!html.includes('assets/buyer-planning.css')) html = html.replace('</head>', `<link rel="stylesheet" href="${base}assets/buyer-planning.css?v=20261116"></head>`);
   if (config.kind === 'room') {
-    html = html.replace(/Room planning guide · updated \d+ November 2026/, 'Room planning guide · updated 18 November 2026');
+    html = html.replace(/Room planning guide · updated \d+ November 2026/, 'Room planning guide · updated 25 November 2026');
+    html = html.replace(/(assets\/buyer-planning\.css\?v=)\d+/, (_, asset) => asset + '20261125');
+    if (!html.includes('assets/room-size-check.js')) html = html.replace('</head>', `<script defer src="${base}assets/room-size-check.js?v=20261125"></script></head>`);
     html = insert(html, 'single-bay-plan', bayPlan, '<section class="section" id="dimensions">');
+    html = insert(html, 'room-size-check', roomCheck, '<!-- buyer-guidance:single-bay-plan:start -->');
+    if (!html.includes('href="#room-size-check"')) html = html.replace('<a href="#dimensions">', '<a href="#room-size-check">Compare my room size</a><a href="#dimensions">');
     if (!html.includes('href="#single-bay-plan"')) html = html.replace('<a href="#dimensions">', '<a href="#single-bay-plan">Single-bay diagram</a><a href="#dimensions">');
     if (!html.includes('class="button secondary" href="'+worksheet)) html = html.replace('<a class="button" href="#inquiry">Ask about my room →</a>', `<a class="button" href="#inquiry">Ask about my room →</a><a class="button secondary" href="${worksheet}" download>Room worksheet · PDF ↓</a>`);
     if (!html.includes('href="#room-worksheet"')) html = html.replace('<a href="#clearance">Ceiling & swing clearance</a>', '<a href="#clearance">Ceiling & swing clearance</a><a href="#room-worksheet">Measurement worksheet</a>');

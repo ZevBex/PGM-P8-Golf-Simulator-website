@@ -89,7 +89,7 @@ const budget = `<div class="buyer-next" id="one-bay-budget"><h3>What will one co
 <p>For one P8 Standard bay, start your equipment budget at ${standardPackage.printedPrice} USD. Use the lines below to turn that figure into an opening budget for your venue.</p>
 <div class="table-scroll one-bay-table"><table><caption>One-bay budget worksheet · P8 Standard</caption><thead><tr><th scope="col">Budget item</th><th scope="col">Amount or quote to obtain</th></tr></thead><tbody>${budgetRows}</tbody></table></div>
 <p><strong>Opening budget:</strong> Start with the confirmed equipment quote. Add only one-time charges outside its scope. If delivery or installation is bundled, count it once. Keep monthly and annual software fees in a separate operating budget.</p>
-<p><a href="${b}guides/golf-simulator-room-size/#single-bay-plan">Check your bay against the dimensioned room plan →</a></p></div>`;
+<p><a href="${b}guides/golf-simulator-room-size/#room-size-check">Compare your bay dimensions with the PGM catalog →</a></p></div>`;
 const packages = section('packages', 'Commercial golf simulator cost: start with the equipment package.',
   'The PGM catalog lists three P8 system packages. Use these equipment prices as a starting point for an itemized commercial project quotation.',
   `<div class="table-scroll" role="region" aria-label="P8 commercial equipment package references, scroll to compare" tabindex="0"><table><caption>PGM P8 catalog package prices · USD · scroll to compare →</caption><thead><tr><th scope="col">Package</th><th scope="col">Catalog equipment price</th><th scope="col">Projection</th><th scope="col">Motion option</th></tr></thead><tbody>${priceRows}</tbody></table></div>

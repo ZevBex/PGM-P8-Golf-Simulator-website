@@ -15,6 +15,12 @@
 .one-bay-table thead th:first-child{width:32%}
 .one-bay-table th,.one-bay-table td{overflow-wrap:break-word}
 .one-bay-table td strong{display:inline}
+.room-size-form{max-width:740px;grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:22px}
+.room-size-form[hidden],#room-size-add-to-inquiry[hidden]{display:none}
+.room-size-form select{width:100%;max-width:240px;min-height:48px;border:1px solid #3f5557;border-radius:7px;background:#071012;color:var(--text);padding:12px;font:inherit}
+.room-size-form .actions{grid-column:1/-1;margin:0}
+.room-size-form :focus-visible,#room-size-add-to-inquiry:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+@media(max-width:760px){.room-size-form{grid-template-columns:1fr}}
 @media(max-width:600px){
   .one-bay-table th[scope=row],.one-bay-table thead th:first-child{min-width:0;position:static}
   .one-bay-table th,.one-bay-table td{padding:12px}

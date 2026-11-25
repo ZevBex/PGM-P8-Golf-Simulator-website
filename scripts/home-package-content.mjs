@@ -19,7 +19,7 @@ export function homePackages(base) {
 <article class="card"><h3>Flagship · ${usd(flagship.amount)} USD</h3><p>For ${usd(flagship.amount - standard.amount)} more than Standard, the catalog lists 4K projection and a higher-specification computer. Ask for the quoted projector and computer models before choosing the upgrade.</p></article>
 <article class="card"><h3>Performance · ${usd(performance.amount)} USD</h3><p>Choose this configuration if you want an eight-way motion swing plate with 4K projection. Have the installer check the finished playing height and how the plate will meet the surrounding floor.</p></article>
 </div><p class="fine-print">Equipment prices from the <a href="${base}${catalog.source}#page=${catalog.packagePdfPage}">PGM catalog</a>. Ask for an itemized quote covering delivery to your address and the work required in your room.</p>
-<p><a href="${base}products/pgm-p8-golf-simulator/#packages">Compare the full P8 equipment lists →</a></p>
+<div class="actions"><a class="button" href="${base}support/request-a-quote/?product=P8&amp;from=solutions#inquiry">Get a quote for my home setup →</a><a class="button secondary" href="${base}products/pgm-p8-golf-simulator/#packages">Compare the full P8 equipment lists →</a></div>
 </div></section>
 <section class="section alt" id="garage-setup"><div class="wrap">
 <div class="section-intro"><h2>Will a garage golf simulator package work with your door and parking space?</h2></div>

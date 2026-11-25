@@ -14,7 +14,7 @@ SITE = "https://mypgmgolf.com"
 QUOTE = "/support/request-a-quote/"
 HREF = re.compile(r"""(?i)(\s+href\s*=\s*)(["'])(.*?)\2""", re.S)
 CONTAINERS = {"header", "nav", "main", "section", "footer", "aside"}
-SECTIONS = {"inquiry":"页面咨询区", "single-bay-plan":"单球位方案", "room-worksheet":"房间测量表",
+SECTIONS = {"home-packages":"家用套餐对比", "inquiry":"页面咨询区", "single-bay-plan":"单球位方案", "room-worksheet":"房间测量表",
             "packages":"配置方案", "quote-checklist":"报价清单", "venue-brief":"场地需求",
             "catalog-projects":"项目案例", "brief":"项目需求", "next":"下一步"}
 
